@@ -2,7 +2,7 @@ const router = require('koa-router')();
 
 router.get('/', async (ctx) => {
 	await ctx.render('index', {
-		title: 'Hello Koa 2!'
+		title: '你好！这是杨盼的内容管理系统。'
 	});
 });
 

@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
-const tokenSchema = new Schema(
+const monitorSchema = new Schema(
 	{
 		__v: {
 			type: Number,
 			select: false
 		},
-		token: {
-			type: String,
+		monitor: {
+			type: Object,
 			required: true
 		},
 	},
 	{ timestamps: true }
 );
 
-module.exports = model('Token', tokenSchema);
+module.exports = model('MONITOR', monitorSchema);
