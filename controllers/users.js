@@ -171,7 +171,7 @@ class UsersCtl {
 			password: { type: 'string', required: true }
 		});
 		const user = await User.findOne({ name: ctx.request.body.name }).select(
-			'+password'
+			'+password +scope'
 		);
 		if (!user) {
 			ctx.throw(401, '用户名不存在');

@@ -17,7 +17,7 @@ class Auth {
 			if (tm) {
 				try {
 					const user = jwt.verify(token, secret);
-					if (user.scope < this.level) {
+					if (!user.scope || (user.scope < this.level)) {
 						ctx.throw(403, '权限不足');
 					}
 					ctx.state.user = user; // 通常放一些用户信息
@@ -26,7 +26,7 @@ class Auth {
 					if (err.name === 'TokenExpiredError') {
 						await Token.findByIdAndRemove(tm._id);
 					}
-					ctx.throw(401, '用户未通过验证');
+					ctx.throw(401, err);
 				}
 			} else {
 				ctx.throw(401, '当前用户登陆不合法');
