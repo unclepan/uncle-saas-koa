@@ -15,4 +15,4 @@ const monitorSchema = new Schema(
 	{ timestamps: true }
 );
 
-module.exports = model('MONITOR', monitorSchema);
+module.exports = model('Monitor', monitorSchema);
