@@ -22,6 +22,7 @@ const optionSchema = new Schema(
 	},
 	{ timestamps: true }
 );
+
 const optionValueSchema = new Schema(
 	{
 		__v: {
