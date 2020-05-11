@@ -8,7 +8,7 @@ const Store = new Redis().client;
 
 class UsersCtl {
 	// 检查是否已经存在该用户名
-	async findByName(ctx) {
+	async whetherName(ctx) {
 		const { name } = ctx.query;
 		const repeatedUser = await User.findOne({ name });
 		ctx.body = !!repeatedUser;

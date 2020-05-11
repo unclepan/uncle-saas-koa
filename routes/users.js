@@ -5,7 +5,7 @@ const { Auth } = require('../middlewares/auth');
 const {
 	find,
 	findById,
-	findByName,
+	whetherName,
 	verify,
 	create,
 	update,
@@ -14,7 +14,6 @@ const {
 	logout,
 	checkOwner,
 } = require('../controllers/users');
-
 
 router.get('/', find);
 
@@ -26,7 +25,7 @@ router.delete('/:id', new Auth(32).m, del); // 只有超级管理员可以删除
 
 router.get('/find/:id', findById);
 
-router.get('/by/name', findByName);
+router.get('/whether/name', whetherName);
 
 router.post('/verify', verify);
 
