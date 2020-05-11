@@ -42,6 +42,14 @@ const userSchema = new Schema(
 			type: String,
 			default: '暂无简介',
 		},
+		authScope: { // 用户权限范围
+			type: Number,
+			select: false,
+			default: 8
+			//8: 普通用户
+			//16: 管理员
+			//32: 超级管理员
+		}
 	},
 	{ timestamps: true }
 );

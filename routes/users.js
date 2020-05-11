@@ -5,7 +5,7 @@ const { Auth } = require('../middlewares/auth');
 const {
 	find,
 	findById,
-	fundByName,
+	findByName,
 	verify,
 	create,
 	update,
@@ -20,13 +20,13 @@ router.get('/', find);
 
 router.post('/', create);
 
-router.get('/:id', findById);
-
-router.get('/fund/name', fundByName);
-
 router.patch('/:id', new Auth().m, checkOwner, update);
 
-router.delete('/:id', new Auth().m, checkOwner, del);
+router.delete('/:id', new Auth(32).m, del); // 只有超级管理员可以删除用户，自己也不行
+
+router.get('/find/:id', findById);
+
+router.get('/by/name', findByName);
 
 router.post('/verify', verify);
 
@@ -34,7 +34,7 @@ router.post('/login', login);
 
 router.post('/logout', logout);
 
-router.get('/login/info',
+router.get('/info',
 	new Auth().m, 
 	async(ctx, next) => {
 		ctx.params.id = ctx.state.user._id;

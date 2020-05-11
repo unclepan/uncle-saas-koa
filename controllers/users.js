@@ -3,13 +3,12 @@ const jsonwebtoken = require('jsonwebtoken');
 const Redis = require('koa-redis');
 const User = require('../models/users');
 const Token = require('../models/token');
-const { Auth } = require('../middlewares/auth');
 const { secret, smtp } = require('../config');
 const Store = new Redis().client;
 
 class UsersCtl {
 	// 检查是否已经存在该用户名
-	async fundByName(ctx) {
+	async findByName(ctx) {
 		const { name } = ctx.query;
 		const repeatedUser = await User.findOne({ name });
 		ctx.body = !!repeatedUser;
@@ -46,8 +45,8 @@ class UsersCtl {
 		const mailOptions = {
 			from: `"认证邮件" <${smtp.user}>`,
 			to: ko.email,
-			subject: 'ANTCP用户注册码',
-			html: `您正在ANTCP网站中注册，您的邀请码是${ko.code}`
+			subject: 'SAAS内容管理系统用户注册码',
+			html: `您正在内容管理系统中注册，您的邀请码是${ko.code}`
 		};
 		await transporter.sendMail(mailOptions, (error) => {
 			if (error) {
@@ -71,12 +70,12 @@ class UsersCtl {
 	}
 	// 用户列表
 	async find(ctx) {
-		const { per_page = 10 } = ctx.query;
+		const { size = 10 } = ctx.query;
 		const page = Math.max(ctx.query.page * 1, 1) - 1;
-		const perPage = Math.max(per_page * 1, 1);
+		const pageSize = Math.max(size * 1, 1);
 		ctx.body = await User.find({ name: new RegExp(ctx.query.q) })
-			.limit(perPage)
-			.skip(page * perPage);
+			.limit(pageSize)
+			.skip(page * pageSize);
 	}
 	// 根据某个用户id查找用户详情
 	async findById(ctx) {
@@ -104,7 +103,8 @@ class UsersCtl {
 		ctx.verifyParams({
 			name: { type: 'string', required: true },
 			password: { type: 'string', required: true },
-			email: { type: 'email', required: true }
+			email: { type: 'email', required: true },
+			code: { type: 'string', required: true }
 		});
 		const { name, password, email, code } = ctx.request.body;
 
@@ -141,6 +141,8 @@ class UsersCtl {
 			name: { type: 'string', required: false },
 			password: { type: 'string', required: false },
 			avatar: { type: 'string', required: false },
+			gender: { type: 'string', required: false },
+			introduce: { type: 'string', required: false },
 		});
 		if (ctx.request.body.password) {
 			// 密码加密单独处理
@@ -180,15 +182,13 @@ class UsersCtl {
 				user.password
 			);
 			if (pt) {
-				const { _id, name } = user;
-				const token = jsonwebtoken.sign({ _id, name ,scope: Auth.USER }, secret, {
+				const { _id, name, scope } = user;
+				const token = jsonwebtoken.sign({ _id, name ,scope }, secret, {
 					expiresIn: 1000 * 60 * 30
 				});
-
 				await new Token({ // 登陆成功后存入数据库
 					token,
 				}).save();
-
 				ctx.body = { token };
 			} else {
 				ctx.throw(401, '密码错误');

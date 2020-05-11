@@ -5,9 +5,9 @@ const { secret } = require('../config');
 class Auth {
 	constructor(level = 1) {
 		this.level = level;
-		Auth.USER = 8; // 普通用户
-		Auth.ADMIN = 16; // 管理员
-		Auth.SUPER_ADMIN = 32; // 超级管理员
+		// Auth.USER = 8; // 普通用户
+		// Auth.ADMIN = 16; // 管理员
+		// Auth.SUPER_ADMIN = 32; // 超级管理员
 	}
 	get m() {
 		return  async(ctx, next) => { // 自己编写的认证
