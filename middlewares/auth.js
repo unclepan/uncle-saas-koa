@@ -10,7 +10,7 @@ class Auth {
 		// Auth.SUPER_ADMIN = 32; // 超级管理员
 	}
 	get m() {
-		return  async(ctx, next) => { // 自己编写的认证
+		return async (ctx, next) => { // 自己编写的认证
 			const { authorization = '' } = ctx.request.header;
 			const token = authorization.replace('Bearer ', '');
 			const tm = await Token.findOne({token});

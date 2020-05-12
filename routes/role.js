@@ -8,6 +8,10 @@ const {
 	update,
 	checkRoleExist,
 	delete: del,
+	findBindUser,
+	checkUserRelationRoleExist,
+	createBindUser,
+	deleteBindUser
 } = require('../controllers/role');
 
 router.get('/', find);
@@ -19,5 +23,11 @@ router.get('/:id', checkRoleExist, findById);
 router.patch('/:id', new Auth(16).m, checkRoleExist, update);
 
 router.delete('/:id', new Auth(16).m, checkRoleExist, del);
+
+router.get('/:id/bind/user', new Auth(16).m, findBindUser);
+
+router.post('/:id/bind/user', new Auth(16).m, checkUserRelationRoleExist('gt'), createBindUser);
+
+router.post('/:id/delete/bind/user', new Auth(16).m, checkUserRelationRoleExist('lt'), deleteBindUser);
 
 module.exports = router;
