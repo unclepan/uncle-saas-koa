@@ -141,7 +141,7 @@ class UsersCtl {
 			name: { type: 'string', required: false },
 			password: { type: 'string', required: false },
 			avatar: { type: 'string', required: false },
-			gender: { type: 'string', required: false },
+			gender: { type: 'enum', required: false, values: ['male', 'female'] },
 			introduce: { type: 'string', required: false },
 		});
 		if (ctx.request.body.password) {
