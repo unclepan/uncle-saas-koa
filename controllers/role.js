@@ -95,7 +95,7 @@ class RoleCtl {
 				ctx.throw(404, '当前角色与某些用户已经存在关联');
 			}
 			if (con === 'lt' && (!userRelationRole.length)) {
-				ctx.throw(404, '当前角色与传入的用户不存在关联');
+				ctx.throw(404, '当前角色与传入的某些用户不存在关联');
 			}
 			await next();
 		};

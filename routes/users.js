@@ -13,6 +13,10 @@ const {
 	login,
 	logout,
 	checkOwner,
+	findBindRole,
+	checkUserRelationRoleExist,
+	createBindRole,
+	deleteBindRole
 } = require('../controllers/users');
 
 router.get('/', find);
@@ -41,5 +45,11 @@ router.get('/info',
 	}, 
 	findById
 );
+
+router.get('/:id/bind/role', new Auth(16).m, findBindRole);
+
+router.post('/:id/bind/role', new Auth(16).m, checkUserRelationRoleExist('gt'), createBindRole);
+
+router.post('/:id/delete/bind/role', new Auth(16).m, checkUserRelationRoleExist('lt'), deleteBindRole);
 
 module.exports = router;

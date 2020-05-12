@@ -3,6 +3,7 @@ const jsonwebtoken = require('jsonwebtoken');
 const Redis = require('koa-redis');
 const User = require('../models/users');
 const Token = require('../models/token');
+const UserRelationRole = require('../models/user-relation-role');
 const { secret, smtp } = require('../config');
 const Store = new Redis().client;
 
@@ -214,16 +215,65 @@ class UsersCtl {
 	}
 
 
+	// 查询该用户关联了哪些角色
+	async findBindRole(ctx) {
+		const { size = 10 } = ctx.query;
+		const page = Math.max(ctx.query.page * 1, 1) - 1;
+		const perPage = Math.max(size * 1, 1);
+		ctx.body = await UserRelationRole.find({
+			user: ctx.params.id
+		})
+			.limit(perPage)
+			.skip(page * perPage)
+			.populate('user role');
+	}
 
+	checkUserRelationRoleExist(con) {
+		return async (ctx, next) => {
+			const { roles } = ctx.request.body;
+			const userRelationRole = await UserRelationRole.find(
+				{
+					user: ctx.params.id,
+					role: { $in:[...roles]}
+				}
+			);
+			if (con === 'gt' && (userRelationRole.length > 0)) {
+				ctx.throw(404, '当前用户与某些角色已经存在关联');
+			}
+			if (con === 'lt' && (!userRelationRole.length)) {
+				ctx.throw(404, '当前用户与传入某些角色的不存在关联');
+			}
+			await next();
+		};
+	}
 
+	// 创建角色与用户的关联
+	async createBindRole(ctx) {
+		ctx.verifyParams({
+			roles: { type: 'array', required: true },
+		});
+		const { roles } = ctx.request.body;
+		const docs = roles.map(item => {
+			return {user: ctx.params.id, role: item };
+		});
+		const relations = await UserRelationRole.insertMany(docs);
+		ctx.body = relations;
+	}
 
-
-
-
-
-
-
-
+	// 取消角色与用户的关联
+	async deleteBindRole(ctx) {
+		ctx.verifyParams({
+			roles: { type: 'array', required: true },
+		});
+		const { roles } = ctx.request.body;
+		await UserRelationRole.deleteMany(
+			{
+				user: ctx.params.id,
+				role: {$in: [...roles]}
+			}
+		);
+		ctx.status = 204;
+	}
 
 }
 module.exports = new UsersCtl();
