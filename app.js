@@ -27,6 +27,7 @@ app.use(logger());
 
 //静态文件服务
 app.use(require('koa-static')(__dirname + '/public'));
+app.use(require('koa-static')(__dirname + '/uploads'));
 
 //进行视图模板渲染
 app.use(views(__dirname + '/views', {
@@ -50,7 +51,7 @@ app.use(error({
 app.use(koaBody({
 	multipart: true, // 支持 multipart-formdate 的表单，意思就是支持文件上传(文件的Content-Type就叫multipart-formdate)
 	formidable: { // koa-body集成了formidable包
-		uploadDir: path.join(__dirname, '/public/uploads'),
+		uploadDir: path.join(__dirname, '/uploads/transfer'),
 		keepExtensions: true //保留拓展名
 	},
 	formLimit: '10mb',
