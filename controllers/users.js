@@ -158,6 +158,7 @@ class UsersCtl {
 		}
 		ctx.body = user;
 	}
+
 	async delete(ctx) {
 		const user = await User.findByIdAndRemove(ctx.params.id);
 		if (!user) {

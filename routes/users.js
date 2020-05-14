@@ -16,8 +16,12 @@ const {
 	findBindRole,
 	checkUserRelationRoleExist,
 	createBindRole,
-	deleteBindRole
+	deleteBindRole,
 } = require('../controllers/users');
+
+const { 
+	cropAvatar
+} = require('../controllers/file');
 
 router.get('/', find);
 
@@ -51,5 +55,12 @@ router.get('/:id/bind/role', new Auth(16).m, findBindRole);
 router.post('/:id/bind/role', new Auth(16).m, checkUserRelationRoleExist('gt'), createBindRole);
 
 router.post('/:id/delete/bind/role', new Auth(16).m, checkUserRelationRoleExist('lt'), deleteBindRole);
+
+// 头像更换接口
+// 1.需要验证登陆
+// 2.是否是本人
+// 3.对头像文件进行处理（裁剪，转存）
+// 4.更改数据库用户头像链接字段
+router.post('/:id/update/avatar',new Auth().m, checkOwner, cropAvatar, update);
 
 module.exports = router;
