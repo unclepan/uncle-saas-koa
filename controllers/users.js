@@ -139,18 +139,29 @@ class UsersCtl {
 	// 更新用户
 	async update(ctx) {
 		ctx.verifyParams({
-			name: { type: 'string', required: false },
-			password: { type: 'string', required: false },
-			avatar: { type: 'string', required: false },
 			gender: { type: 'enum', required: false, values: ['male', 'female'] },
-			introduce: { type: 'string', required: false },
 		});
-		if (ctx.request.body.password) {
+		const { name, password, email, scope } = ctx.request.body;
+		if(name){
+			const repeatedUser = await User.findOne({ name });
+			if (repeatedUser && ctx.params.id !== repeatedUser.id) {
+				ctx.throw(409, '用户名已经存在');
+			}
+		}
+		if (password) {
 			// 密码加密单独处理
 			const user = await User.findById(ctx.params.id).select('+password');
-			user.password = ctx.request.body.password;
+			user.password = password;
 			delete ctx.request.body.password;
 			await user.save();
+		} else {
+			delete ctx.request.body.password;
+		}
+		if (email) {
+			delete ctx.request.body.email;
+		}
+		if (scope) {
+			delete ctx.request.body.scope;
 		}
 		const user = await User.findByIdAndUpdate(ctx.params.id, ctx.request.body);
 		if (!user) {
