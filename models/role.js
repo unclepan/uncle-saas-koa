@@ -30,7 +30,13 @@ const roleSchema = new Schema(
 					ref: 'Functive',
 				}
 			]
-		}
+		},
+		del: { // 软删除
+			type: Boolean,
+			required: true,
+			default: false,
+			select: false
+		},
 	},
 	{ timestamps: true }
 );

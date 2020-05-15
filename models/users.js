@@ -56,7 +56,13 @@ const userSchema = new Schema(
 			//8: 普通用户
 			//16: 管理员
 			//32: 超级管理员
-		}
+		},
+		del: { // 软删除
+			type: Boolean,
+			required: true,
+			default: false,
+			select: false
+		},
 	},
 	{ timestamps: true }
 );

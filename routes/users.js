@@ -3,6 +3,9 @@ const Router = require('koa-router');
 const router = new Router({ prefix: '/api/users' });
 const { Auth } = require('../middlewares/auth');
 const {
+	parameter
+} = require('../middlewares/filter');
+const {
 	find,
 	findById,
 	whetherName,
@@ -27,7 +30,7 @@ router.get('/', find);
 
 router.post('/', create);
 
-router.patch('/:id', new Auth().m, checkOwner, update);
+router.patch('/:id', new Auth().m, checkOwner,parameter, update);
 
 router.delete('/:id', new Auth(32).m, del); // 只有超级管理员可以删除用户，自己也不行
 

@@ -11,6 +11,7 @@ const monitorSchema = new Schema(
 			type: Object,
 			required: true
 		},
+		
 	},
 	{ timestamps: true }
 );

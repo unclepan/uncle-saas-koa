@@ -1,6 +1,10 @@
 const Router = require('koa-router');
 const router = new Router({ prefix:'/api/role'});
 const { Auth } = require('../middlewares/auth');
+const {
+	parameter
+} = require('../middlewares/filter');
+
 const { 
 	find, 
 	findById, 
@@ -20,7 +24,7 @@ router.post('/', new Auth(16).m, create);
 
 router.get('/:id', checkRoleExist, findById);
 
-router.patch('/:id', new Auth(16).m, checkRoleExist, update);
+router.patch('/:id', new Auth(16).m, checkRoleExist, parameter, update);
 
 router.delete('/:id', new Auth(16).m, checkRoleExist, del);
 

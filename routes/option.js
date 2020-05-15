@@ -1,6 +1,9 @@
 const Router = require('koa-router');
 const router = new Router({ prefix:'/api/option'});
 const { Auth } = require('../middlewares/auth');
+const {
+	parameter
+} = require('../middlewares/filter');
 const { 
 	findOption, 
 	checkOptionExist,
@@ -23,7 +26,7 @@ router.post('/', new Auth(16).m, createOption);
 
 router.get('/:id', checkOptionExist, findOptionById);
 
-router.patch('/:id', new Auth(16).m, checkOptionExist, updateOption);
+router.patch('/:id', new Auth(16).m, checkOptionExist,parameter, updateOption);
 
 router.delete('/:id', new Auth(16).m, checkOptionExist, deleteOption);
 
