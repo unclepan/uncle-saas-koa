@@ -104,6 +104,7 @@ class UsersCtl {
 		ctx.verifyParams({
 			name: { type: 'string', required: true },
 			password: { type: 'string', required: true },
+			birth: { type: 'dateTime', required: false },
 			email: { type: 'email', required: true },
 			code: { type: 'string', required: true }
 		});
@@ -139,6 +140,7 @@ class UsersCtl {
 	// 更新用户
 	async update(ctx) {
 		ctx.verifyParams({
+			birth: { type: 'dateTime', required: false },
 			gender: { type: 'enum', required: false, values: ['male', 'female'] },
 		});
 		const { name, password, email, scope } = ctx.request.body;

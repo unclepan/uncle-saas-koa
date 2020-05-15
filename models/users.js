@@ -13,6 +13,7 @@ const userSchema = new Schema(
 		name: {
 			type: String,
 			required: true,
+			unique: true,
 			max: 120,
 			min: 1
 		},
@@ -34,6 +35,9 @@ const userSchema = new Schema(
 		avatar: { // 头像
 			type: String,
 			default:'/avatar/default.png'
+		},
+		birth: { // 生日
+			type: Date,
 		},
 		gender: { // 性别
 			type: String,
