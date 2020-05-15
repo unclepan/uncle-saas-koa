@@ -3,12 +3,23 @@ const UserRelationRole = require('../models/user-relation-role');
 
 class RoleCtl {
 	async find(ctx) {
-		const { size = 10 } = ctx.query;
-		const page = Math.max(ctx.query.page * 1, 1) - 1;
+		const { size = 10, current = 1, name, state } = ctx.query;
+		const page = Math.max(current * 1, 1) - 1;
 		const perPage = Math.max(size * 1, 1);
-		ctx.body = await Role.find({name: new RegExp(ctx.query.q)})
+		const conditions = {name: new RegExp(name)};
+		if(state){
+			conditions.state = state;
+		}
+		const count = await Role.count(conditions);
+		const data = await Role.find(conditions)
 			.limit(perPage)
 			.skip(page * perPage);
+		ctx.body = {
+			data,
+			count,
+			current: page + 1,
+			size: perPage
+		}; 
 	}
   
 	async checkRoleExist(ctx, next) {
