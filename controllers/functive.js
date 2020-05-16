@@ -34,6 +34,9 @@ class FunctiveCtl {
 		const functive = await Functive.findById(ctx.params.id)
 			.select(selectFields)
 			.populate(populateStr);
+		if (!functive) {
+			ctx.throw(404, '当前功能项不存在');
+		}
 		ctx.body = functive;
 	}
   

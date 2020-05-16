@@ -17,7 +17,7 @@ router.get('/', find);
 
 router.post('/', new Auth(16).m, create);
 
-router.get('/:id', checkFunctiveExist, findById);
+router.get('/:id', findById);
 
 router.patch('/:id', new Auth(16).m, checkFunctiveExist,parameter, update);
 

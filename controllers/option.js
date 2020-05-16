@@ -33,6 +33,9 @@ class OptionCtl {
 		const option = await Option.findById(ctx.params.id)
 			.select(selectFields)
 			.populate(populateStr);
+		if (!option) {
+			ctx.throw(404, '当前选项不存在');
+		}
 		ctx.body = option;
 	}
   

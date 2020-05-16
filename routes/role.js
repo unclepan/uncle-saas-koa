@@ -22,7 +22,7 @@ router.get('/', find);
 
 router.post('/', new Auth(16).m, create);
 
-router.get('/:id', checkRoleExist, findById);
+router.get('/:id', findById);
 
 router.patch('/:id', new Auth(16).m, checkRoleExist, parameter, update);
 

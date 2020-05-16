@@ -4,16 +4,24 @@ const UserRelationRole = require('../models/user-relation-role');
 class RoleCtl {
 	async find(ctx) {
 		const { size = 10, current = 1, name, state } = ctx.query;
-		const page = Math.max(current * 1, 1) - 1;
+		let page = Math.max(current * 1, 1) - 1;
 		const perPage = Math.max(size * 1, 1);
-		const conditions = {name: new RegExp(name)};
+		const conditions = {del: false, name: new RegExp(name)};
 		if(state){
 			conditions.state = state;
 		}
 		const count = await Role.count(conditions);
-		const data = await Role.find(conditions)
+
+		let data = await Role.find(conditions)
 			.limit(perPage)
 			.skip(page * perPage);
+
+		if(!data.length && page > 0){
+			page = 0;
+			data = await Role.find(conditions)
+				.limit(perPage)
+				.skip(page * perPage);
+		} 
 		ctx.body = {
 			data,
 			count,
@@ -46,6 +54,9 @@ class RoleCtl {
 		const role = await Role.findById(ctx.params.id)
 			.select(selectFields)
 			.populate(populateStr);
+		if (!role) {
+			ctx.throw(404, '当前角色不存在');
+		}
 		ctx.body = role;
 	}
   

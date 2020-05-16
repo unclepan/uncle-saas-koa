@@ -24,7 +24,7 @@ router.get('/', findOption);
 
 router.post('/', new Auth(16).m, createOption);
 
-router.get('/:id', checkOptionExist, findOptionById);
+router.get('/:id', findOptionById);
 
 router.patch('/:id', new Auth(16).m, checkOptionExist,parameter, updateOption);
 
