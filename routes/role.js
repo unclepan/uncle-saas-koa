@@ -26,7 +26,14 @@ router.get('/:id', findById);
 
 router.patch('/:id', new Auth(16).m, checkRoleExist, parameter, update);
 
+//硬删除
 router.delete('/:id', new Auth(16).m, checkRoleExist, del);
+
+//软删除
+router.delete('/delete/:id', new Auth(16).m, checkRoleExist, async(ctx, next) => {
+	ctx.request.body.del = true;
+	await next();
+}, update);
 
 router.get('/:id/bind/user', new Auth(16).m, findBindUser);
 

@@ -81,6 +81,7 @@ class RoleCtl {
 			description: { type: 'string', required: false },
 			state: { type: 'boolean', required: false },
 			functive: { type: 'array', required: false },
+			del: { type: 'boolean', required: false },
 		});
 		await ctx.state.role.update(ctx.request.body);
 		ctx.body = ctx.state.role;
