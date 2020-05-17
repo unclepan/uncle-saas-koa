@@ -2,12 +2,31 @@ const {Option, OptionValue} = require('../models/option');
 
 class OptionCtl {
 	async findOption(ctx) {
-		const { size = 10 } = ctx.query;
-		const page = Math.max(ctx.query.page * 1, 1) - 1;
+		const { size = 10, current = 1, name, state } = ctx.query;
+		let page = Math.max(current * 1, 1) - 1;
 		const perPage = Math.max(size * 1, 1);
-		ctx.body = await Option.find({name: new RegExp(ctx.query.q)})
+		const conditions = {del: false, name: new RegExp(name)};
+		if(state){
+			conditions.state = state;
+		}
+		const count = await Option.count(conditions);
+
+		let data = await Option.find(conditions)
 			.limit(perPage)
 			.skip(page * perPage);
+
+		if(!data.length && page > 0){
+			page = 0;
+			data = await Option.find(conditions)
+				.limit(perPage)
+				.skip(page * perPage);
+		} 
+		ctx.body = {
+			data,
+			count,
+			current: page + 1,
+			size: perPage
+		}; 
 	}
 	async checkOptionExist(ctx, next) {
 		const option = await Option.findById(ctx.params.id);
@@ -55,7 +74,8 @@ class OptionCtl {
 		ctx.verifyParams({
 			name: { type: 'string', required: false },
 			ename: { type: 'string', required: false },
-			description: { type: 'string', required: false } 
+			description: { type: 'string', required: false },
+			del: { type: 'boolean', required: false },
 		});
 		await ctx.state.option.update(ctx.request.body);
 		ctx.body = ctx.state.option;
@@ -65,6 +85,7 @@ class OptionCtl {
 		await Option.findByIdAndRemove(ctx.params.id);
 		ctx.status = 204;
 	}
+	
 
 	// 以下为选项值
 	async findOptionValue(ctx) {
@@ -122,7 +143,8 @@ class OptionCtl {
 			name: { type: 'string', required: false },
 			ename: { type: 'string', required: false },
 			value: { type: 'string', required: true },
-			description: { type: 'string', required: false } 
+			description: { type: 'string', required: false },
+			del: { type: 'boolean', required: false },
 		});
 		await ctx.state.optionValue.update(ctx.request.body);
 		ctx.body = ctx.state.optionValue;

@@ -20,7 +20,7 @@ const {
 
 router.get('/', find);
 
-router.post('/', new Auth(16).m, create);
+router.post('/', new Auth(16).m, parameter, create);
 
 router.get('/:id', findById);
 

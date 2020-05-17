@@ -19,6 +19,12 @@ const optionSchema = new Schema(
 			type: String,
 			required: true
 		},
+		del: { // 软删除
+			type: Boolean,
+			required: true,
+			default: false,
+			select: false
+		},
 	},
 	{ timestamps: true }
 );

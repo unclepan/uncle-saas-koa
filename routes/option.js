@@ -22,21 +22,29 @@ const {
 
 router.get('/', findOption);
 
-router.post('/', new Auth(16).m, createOption);
+router.post('/', new Auth(16).m,parameter, createOption);
 
 router.get('/:id', findOptionById);
 
-router.patch('/:id', new Auth(16).m, checkOptionExist,parameter, updateOption);
+router.patch('/:id', new Auth(16).m, checkOptionExist, parameter, updateOption);
 
 router.delete('/:id', new Auth(16).m, checkOptionExist, deleteOption);
 
+//软删除
+router.delete('/delete/:id', new Auth(16).m, checkOptionExist, async(ctx, next) => {
+	ctx.request.body.del = true;
+	await next();
+}, updateOption);
+
+
+// 以下为选项值
 router.get('/value/:id', findOptionValue);
 
-router.post('/value/:id', new Auth(16).m, createOptionValue);
+router.post('/value/:id', new Auth(16).m,parameter, createOptionValue);
 
 router.get('/value/id/:vid', checkOptionValueExist, findOptionValueById);
 
-router.patch('/value/id/:vid', new Auth(16).m, checkOptionValueExist, updateOptionValue);
+router.patch('/value/id/:vid', new Auth(16).m, checkOptionValueExist, parameter, updateOptionValue);
 
 router.delete('/value/id/:vid', new Auth(16).m, checkOptionValueExist, deleteOptionValue);
 
