@@ -13,7 +13,8 @@ const optionSchema = new Schema(
 		},
 		ename: {
 			type: String,
-			required: true
+			required: true,
+			unique: true,
 		},
 		description: {
 			type: String,

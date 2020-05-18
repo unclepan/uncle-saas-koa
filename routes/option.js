@@ -5,6 +5,7 @@ const {
 	parameter
 } = require('../middlewares/filter');
 const { 
+	find,
 	findOption, 
 	checkOptionExist,
 	findOptionById, 
@@ -53,5 +54,9 @@ router.delete('/value/delete/:vid', new Auth(16).m, checkOptionValueExist, async
 	ctx.request.body.del = true;
 	await next();
 }, updateOptionValue);
+
+
+// 公共选项
+router.get('/select/:id', find);
 
 module.exports = router;

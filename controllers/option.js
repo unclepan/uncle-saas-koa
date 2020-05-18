@@ -1,6 +1,32 @@
 const {Option, OptionValue} = require('../models/option');
+const User = require('../models/users');
+const Role = require('../models/role');
 
 class OptionCtl {
+	async find(ctx) {
+		const { search } = ctx.query;
+		const { id } = ctx.params; 
+		let data;
+		const conditions = {del: false, name: new RegExp(search)};
+		if(id === 'users') { // 用户的公共选项接口数据
+			data = await User.find(conditions);
+		} else if(id === 'roles') { // 角色的公共选项接口数据
+			data = await Role.find(conditions);
+		} else { // 选项配置里的的公共选项接口数据
+			const o = await OptionValue.find(conditions)
+				.select('+optionId')
+				.populate('optionId');
+			data = o.filter(item => {
+				return item.optionId && item.optionId.ename === id;
+			});
+		}
+
+		ctx.body = data.map(item => {
+			const { _id: value, name } = item;
+			return {name, value: item.value || value};
+		}); 
+	}
+
 	async findOption(ctx) {
 		const { size = 10, current = 1, name } = ctx.query;
 		let page = Math.max(current * 1, 1) - 1;
@@ -63,6 +89,11 @@ class OptionCtl {
 			ename: { type: 'string', required: true },
 			description: { type: 'string', required: true },
 		});
+		const { ename } = ctx.request.body;
+		const repeatedOption = await Option.findOne({ ename });
+		if (repeatedOption) {
+			ctx.throw(409, '选项英文名已经存在');
+		}
 		const option = await new Option({
 			...ctx.request.body,
 		}).save();
@@ -76,6 +107,13 @@ class OptionCtl {
 			description: { type: 'string', required: false },
 			del: { type: 'boolean', required: false },
 		});
+		const { ename } = ctx.request.body;
+		if(ename){
+			const repeatedOption = await Option.findOne({ ename });
+			if (repeatedOption && ctx.params.id !== repeatedOption.id) {
+				ctx.throw(409, '选项英文名已经存在');
+			}
+		}
 		await ctx.state.option.update(ctx.request.body);
 		ctx.body = ctx.state.option;
 	}
