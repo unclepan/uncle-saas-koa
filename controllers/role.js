@@ -14,13 +14,15 @@ class RoleCtl {
 
 		let data = await Role.find(conditions)
 			.limit(perPage)
-			.skip(page * perPage);
+			.skip(page * perPage)
+			.sort({'updatedAt': -1});
 
 		if(!data.length && page > 0){
 			page = 0;
 			data = await Role.find(conditions)
 				.limit(perPage)
-				.skip(page * perPage);
+				.skip(page * perPage)
+				.sort({'updatedAt': -1});
 		} 
 		ctx.body = {
 			data,

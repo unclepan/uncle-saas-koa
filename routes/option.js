@@ -22,7 +22,7 @@ const {
 
 router.get('/', findOption);
 
-router.post('/', new Auth(16).m,parameter, createOption);
+router.post('/', new Auth(16).m, parameter, createOption);
 
 router.get('/:id', findOptionById);
 
@@ -40,12 +40,18 @@ router.delete('/delete/:id', new Auth(16).m, checkOptionExist, async(ctx, next) 
 // 以下为选项值
 router.get('/value/:id', findOptionValue);
 
-router.post('/value/:id', new Auth(16).m,parameter, createOptionValue);
+router.post('/value/:id', new Auth(16).m, parameter, createOptionValue);
 
-router.get('/value/id/:vid', checkOptionValueExist, findOptionValueById);
+router.get('/value/:vid', checkOptionValueExist, findOptionValueById);
 
-router.patch('/value/id/:vid', new Auth(16).m, checkOptionValueExist, parameter, updateOptionValue);
+router.patch('/value/:id/:vid', new Auth(16).m, checkOptionValueExist, parameter, updateOptionValue);
 
-router.delete('/value/id/:vid', new Auth(16).m, checkOptionValueExist, deleteOptionValue);
+router.delete('/value/:vid', new Auth(16).m, checkOptionValueExist, deleteOptionValue);
+
+//软删除
+router.delete('/value/delete/:vid', new Auth(16).m, checkOptionValueExist, async(ctx, next) => {
+	ctx.request.body.del = true;
+	await next();
+}, updateOptionValue);
 
 module.exports = router;

@@ -19,7 +19,7 @@ router.post('/', new Auth(16).m, create);
 
 router.get('/:id', findById);
 
-router.patch('/:id', new Auth(16).m, checkFunctiveExist,parameter, update);
+router.patch('/:id', new Auth(16).m, checkFunctiveExist, parameter, update);
 
 router.delete('/:id', new Auth(16).m, checkFunctiveExist, del);
 

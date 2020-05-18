@@ -28,9 +28,9 @@ const {
 
 router.get('/', find);
 
-router.post('/', create);
+router.post('/',parameter, create);
 
-router.patch('/:id', new Auth().m, checkOwner,parameter, update);
+router.patch('/:id', new Auth().m, checkOwner, parameter, update);
 
 router.delete('/:id', new Auth(32).m, del); // 只有超级管理员可以删除用户，自己也不行
 
