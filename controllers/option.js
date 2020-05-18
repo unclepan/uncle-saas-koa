@@ -2,13 +2,10 @@ const {Option, OptionValue} = require('../models/option');
 
 class OptionCtl {
 	async findOption(ctx) {
-		const { size = 10, current = 1, name, state } = ctx.query;
+		const { size = 10, current = 1, name } = ctx.query;
 		let page = Math.max(current * 1, 1) - 1;
 		const perPage = Math.max(size * 1, 1);
 		const conditions = {del: false, name: new RegExp(name)};
-		if(state){
-			conditions.state = state;
-		}
 		const count = await Option.count(conditions);
 
 		let data = await Option.find(conditions)
@@ -91,13 +88,10 @@ class OptionCtl {
 
 	// 以下为选项值
 	async findOptionValue(ctx) {
-		const { size = 10, current = 1, name, state } = ctx.query;
+		const { size = 10, current = 1, name } = ctx.query;
 		let page = Math.max(current * 1, 1) - 1;
 		const perPage = Math.max(size * 1, 1);
 		const conditions = {del: false, optionId: ctx.params.id, name: new RegExp(name)};
-		if(state){
-			conditions.state = state;
-		}
 		const count = await OptionValue.count(conditions);
 
 		let data = await OptionValue.find(conditions)

@@ -20,6 +20,7 @@ const {
 	checkUserRelationRoleExist,
 	createBindRole,
 	deleteBindRole,
+	checkUserExist
 } = require('../controllers/users');
 
 const { 
@@ -28,11 +29,16 @@ const {
 
 router.get('/', find);
 
-router.post('/',parameter, create);
+router.post('/', parameter, create);
 
-router.patch('/:id', new Auth().m, checkOwner, parameter, update);
+router.patch('/:id', new Auth().m, checkOwner,checkUserExist, parameter, update);
 
-router.delete('/:id', new Auth(32).m, del); // 只有超级管理员可以删除用户，自己也不行
+router.delete('/:id', new Auth(32).m, checkUserExist , del); // 只有超级管理员可以删除用户，自己也不行
+
+router.delete('/delete/:id', new Auth(32).m, checkUserExist, async(ctx, next) => { //(软删除) 只有超级管理员可以删除用户，自己也不行
+	ctx.request.body.del = true;
+	await next();
+}, update);
 
 router.get('/find/:id', findById);
 
