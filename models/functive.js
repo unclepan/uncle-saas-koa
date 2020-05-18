@@ -40,8 +40,9 @@ const functiveSchema = new Schema(
 			default: false
 		},
 		parent: { // 父级
-			type: Schema.Types.ObjectId,
-			ref: 'Functive',
+			type: String,
+			required: true,
+			default: 'parent',
 		},
 		del: { // 软删除
 			type: Boolean,

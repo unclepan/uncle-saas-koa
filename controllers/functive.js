@@ -2,12 +2,49 @@ const Functive = require('../models/functive');
 
 class FunctiveCtl {
 	async find(ctx) {
-		const { size = 10 } = ctx.query;
-		const page = Math.max(ctx.query.page * 1, 1) - 1;
+		const { size = 10, current = 1, name, state } = ctx.query;
+		let page = Math.max(current * 1, 1) - 1;
 		const perPage = Math.max(size * 1, 1);
-		ctx.body = await Functive.find({name: new RegExp(ctx.query.q)})
+		const conditions = {del: false, name: new RegExp(name)};
+		if(state){
+			conditions.state = state;
+		}
+		const count = await Functive.count(conditions);
+
+		let data = await Functive.find(conditions)
 			.limit(perPage)
-			.skip(page * perPage);
+			.skip(page * perPage)
+			.sort({'updatedAt': -1});
+
+		if(!data.length && page > 0){
+			page = 0;
+			data = await Functive.find(conditions)
+				.limit(perPage)
+				.skip(page * perPage)
+				.sort({'updatedAt': -1});
+		} 
+		ctx.body = {
+			data,
+			count,
+			current: page + 1,
+			size: perPage
+		}; 
+	}
+	async findTree(ctx){
+		let data = await Functive.find({del: false});
+
+		function treeData(){
+			let cloneData = JSON.parse(JSON.stringify(data));
+			return cloneData.filter(father => {               
+				let branchArr = cloneData.filter(child => father._id === child.parent);
+				if(branchArr.length > 0){
+					father.children = branchArr;
+				}
+				return father.parent == 'parent';
+			});
+		}
+
+		ctx.body = treeData();
 	}
   
 	async checkFunctiveExist(ctx, next) {
@@ -50,7 +87,7 @@ class FunctiveCtl {
 			sort: { type: 'number', required: false },
 			type: { type: 'string', required: true },
 			state: { type: 'boolean', required: true },
-			parent: { type: 'string', required: false },
+			parent: { type: 'string', required: true },
 		});
 		const functive = await new Functive({
 			...ctx.request.body,
@@ -69,6 +106,7 @@ class FunctiveCtl {
 			type: { type: 'string', required: false },
 			state: { type: 'boolean', required: false },
 			parent: { type: 'string', required: false },
+			del: { type: 'boolean', required: false },
 		});
 		await ctx.state.functive.update(ctx.request.body);
 		ctx.body = ctx.state.functive;
