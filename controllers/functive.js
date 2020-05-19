@@ -9,7 +9,7 @@ class FunctiveCtl {
 		if(state){
 			conditions.state = state;
 		}
-		const count = await Functive.count(conditions);
+		const count = await Functive.countDocuments(conditions);
 
 		let data = await Functive.find(conditions)
 			.limit(perPage)

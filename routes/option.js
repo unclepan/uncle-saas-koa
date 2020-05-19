@@ -57,6 +57,6 @@ router.delete('/value/delete/:vid', new Auth(16).m, checkOptionValueExist, async
 
 
 // 公共选项
-router.get('/select/:id', find);
+router.get('/select/:ename', find);
 
 module.exports = router;

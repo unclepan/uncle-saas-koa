@@ -75,7 +75,7 @@ class UsersCtl {
 		let page = Math.max(current * 1, 1) - 1;
 		const perPage = Math.max(size * 1, 1);
 		const conditions = {del: false, name: new RegExp(name), email: new RegExp(email)};
-		const count = await User.count(conditions);
+		const count = await User.countDocuments(conditions);
 
 		let data = await User.find(conditions)
 			.limit(perPage)

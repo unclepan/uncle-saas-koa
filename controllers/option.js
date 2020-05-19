@@ -3,36 +3,12 @@ const User = require('../models/users');
 const Role = require('../models/role');
 
 class OptionCtl {
-	async find(ctx) {
-		const { search } = ctx.query;
-		const { id } = ctx.params; 
-		let data;
-		const conditions = {del: false, name: new RegExp(search)};
-		if(id === 'users') { // 用户的公共选项接口数据
-			data = await User.find(conditions);
-		} else if(id === 'roles') { // 角色的公共选项接口数据
-			data = await Role.find(conditions);
-		} else { // 选项配置里的的公共选项接口数据
-			const o = await OptionValue.find(conditions)
-				.select('+optionId')
-				.populate('optionId');
-			data = o.filter(item => {
-				return item.optionId && item.optionId.ename === id;
-			});
-		}
-
-		ctx.body = data.map(item => {
-			const { _id: value, name } = item;
-			return {name, value: item.value || value};
-		}); 
-	}
-
 	async findOption(ctx) {
 		const { size = 10, current = 1, name } = ctx.query;
 		let page = Math.max(current * 1, 1) - 1;
 		const perPage = Math.max(size * 1, 1);
 		const conditions = {del: false, name: new RegExp(name)};
-		const count = await Option.count(conditions);
+		const count = await Option.countDocuments(conditions);
 
 		let data = await Option.find(conditions)
 			.limit(perPage)
@@ -122,7 +98,6 @@ class OptionCtl {
 		await Option.findByIdAndRemove(ctx.params.id);
 		ctx.status = 204;
 	}
-	
 
 	// 以下为选项值
 	async findOptionValue(ctx) {
@@ -130,7 +105,7 @@ class OptionCtl {
 		let page = Math.max(current * 1, 1) - 1;
 		const perPage = Math.max(size * 1, 1);
 		const conditions = {del: false, optionId: ctx.params.id, name: new RegExp(name)};
-		const count = await OptionValue.count(conditions);
+		const count = await OptionValue.countDocuments(conditions);
 
 		let data = await OptionValue.find(conditions)
 			.limit(perPage)
@@ -220,6 +195,28 @@ class OptionCtl {
 	async deleteOptionValue(ctx) {
 		await OptionValue.findByIdAndRemove(ctx.params.vid);
 		ctx.status = 204;
+	}
+
+	// 公共选项接口
+	async find(ctx) {
+		const { search } = ctx.query;
+		const { ename } = ctx.params; 
+		let data;
+		const conditions = {del: false, name: new RegExp(search)};
+		if(ename === 'users') {
+			data = await User.find(conditions);
+		} else if(ename === 'roles') {
+			data = await Role.find(conditions);
+		} else {
+			const o = await OptionValue.find(conditions).select('+optionId').populate('optionId');
+			data = o.filter(item => {
+				return item.optionId && item.optionId.ename === ename;
+			});
+		}
+		ctx.body = data.map(item => {
+			const { _id: value, name } = item;
+			return {name, value: item.value || value};
+		}); 
 	}
   
 }

@@ -10,7 +10,7 @@ class RoleCtl {
 		if(state){
 			conditions.state = state;
 		}
-		const count = await Role.count(conditions);
+		const count = await Role.countDocuments(conditions);
 
 		let data = await Role.find(conditions)
 			.limit(perPage)
@@ -96,15 +96,7 @@ class RoleCtl {
 
 	// 查询该角色关联了哪些用户
 	async findBindUser(ctx) {
-		const { size = 10 } = ctx.query;
-		const page = Math.max(ctx.query.page * 1, 1) - 1;
-		const perPage = Math.max(size * 1, 1);
-		ctx.body = await UserRelationRole.find({
-			role: ctx.params.id
-		})
-			.limit(perPage)
-			.skip(page * perPage)
-			.populate('user role');
+		ctx.body = await UserRelationRole.find({role: ctx.params.id});
 	}
 
 	checkUserRelationRoleExist(con) {
@@ -117,10 +109,10 @@ class RoleCtl {
 				}
 			);
 			if (con === 'gt' && (userRelationRole.length > 0)) {
-				ctx.throw(404, '当前角色与某些用户已经存在关联');
+				ctx.throw(404, '某些用户与当前角色已经存在关联');
 			}
 			if (con === 'lt' && (!userRelationRole.length)) {
-				ctx.throw(404, '当前角色与传入的某些用户不存在关联');
+				ctx.throw(404, '某些用户与当前角色不存在关联');
 			}
 			await next();
 		};
@@ -140,7 +132,7 @@ class RoleCtl {
 	}
 
 	// 取消角色与用户的关联
-	async deleteBindUser(ctx) {
+	async removeBindUser(ctx) {
 		ctx.verifyParams({
 			users: { type: 'array', required: true },
 		});
