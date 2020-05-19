@@ -252,15 +252,7 @@ class UsersCtl {
 
 	// 查询该用户关联了哪些角色
 	async findBindRole(ctx) {
-		const { size = 10 } = ctx.query;
-		const page = Math.max(ctx.query.page * 1, 1) - 1;
-		const perPage = Math.max(size * 1, 1);
-		ctx.body = await UserRelationRole.find({
-			user: ctx.params.id
-		})
-			.limit(perPage)
-			.skip(page * perPage)
-			.populate('user role');
+		ctx.body = await UserRelationRole.find({user: ctx.params.id});
 	}
 
 	checkUserRelationRoleExist(con) {
@@ -296,7 +288,7 @@ class UsersCtl {
 	}
 
 	// 取消角色与用户的关联
-	async deleteBindRole(ctx) {
+	async removeBindRole(ctx) {
 		ctx.verifyParams({
 			roles: { type: 'array', required: true },
 		});

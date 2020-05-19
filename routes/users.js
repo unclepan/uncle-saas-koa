@@ -19,7 +19,7 @@ const {
 	findBindRole,
 	checkUserRelationRoleExist,
 	createBindRole,
-	deleteBindRole,
+	removeBindRole,
 	checkUserExist
 } = require('../controllers/users');
 
@@ -59,11 +59,11 @@ router.get('/info',
 	findById
 );
 
-router.get('/:id/bind/role', new Auth(16).m, findBindRole);
+router.get('/:id/bind/role', findBindRole);
 
 router.post('/:id/bind/role', new Auth(16).m, checkUserRelationRoleExist('gt'), createBindRole);
 
-router.post('/:id/delete/bind/role', new Auth(16).m, checkUserRelationRoleExist('lt'), deleteBindRole);
+router.post('/:id/remove/bind/role', new Auth(16).m, checkUserRelationRoleExist('lt'), removeBindRole);
 
 // 头像更换接口
 // 1.需要验证登陆

@@ -35,7 +35,7 @@ router.delete('/delete/:id', new Auth(16).m, checkRoleExist, async(ctx, next) =>
 	await next();
 }, update);
 
-router.get('/:id/bind/user', new Auth(16).m, findBindUser);
+router.get('/:id/bind/user', findBindUser);
 
 router.post('/:id/bind/user', new Auth(16).m, checkUserRelationRoleExist('gt'), createBindUser);
 
