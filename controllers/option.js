@@ -1,6 +1,7 @@
 const {Option, OptionValue} = require('../models/option');
 const User = require('../models/users');
 const Role = require('../models/role');
+const Functive = require('../models/functive');
 
 class OptionCtl {
 	async findOption(ctx) {
@@ -207,6 +208,8 @@ class OptionCtl {
 			data = await User.find(conditions);
 		} else if(ename === 'roles') {
 			data = await Role.find(conditions);
+		} else if(ename === 'functive') {
+			data = await Functive.find({...conditions, parent: 'parent'});
 		} else {
 			const o = await OptionValue.find(conditions).select('+optionId').populate('optionId');
 			data = o.filter(item => {
