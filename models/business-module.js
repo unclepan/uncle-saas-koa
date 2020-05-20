@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
-const functiveSchema = new Schema(
+const businessModuleSchema = new Schema(
 	{
 		__v: {
 			type: Number,
@@ -14,6 +14,7 @@ const functiveSchema = new Schema(
 		ename: {
 			type: String,
 			required: true,
+			unique: true,
 			validate: {
 				validator(v) {
 					return (/^[a-z]+$/i).test(v);
@@ -21,34 +22,32 @@ const functiveSchema = new Schema(
 				message: '非英文，请正确填写!'
 			}
 		},
-		link: {
-			type: String,
-		},
-		icon: {
-			type: String,
-		},
 		description: {
 			type: String,
 		},
-		sort:{
-			type: Number,
-			default: 0
-		},
 		type: { // 功能类型
 			type: String,
-			enum: ['menu', 'handle', 'module'],
-			default: 'menu',
+			default: 'module',
 			required: true
+		},
+		module: {
+			type: [
+				{
+					name: {
+						type: String,
+						required: true
+					},
+					fields: {
+						type: Array,
+						default: []
+					}
+				}
+			],
 		},
 		state: { // 状态
 			type: Boolean,
 			required: true,
 			default: false
-		},
-		parent: { // 父级
-			type: String,
-			required: true,
-			default: 'parent',
 		},
 		del: { // 软删除
 			type: Boolean,
@@ -60,4 +59,4 @@ const functiveSchema = new Schema(
 	{ timestamps: true }
 );
 
-module.exports = model('Functive', functiveSchema);
+module.exports = model('BusinessModule', businessModuleSchema);

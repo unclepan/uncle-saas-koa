@@ -15,6 +15,12 @@ const optionSchema = new Schema(
 			type: String,
 			required: true,
 			unique: true,
+			validate: {
+				validator(v) {
+					return (/^[a-z]+$/i).test(v);
+				},
+				message: '非英文，请正确填写!'
+			}
 		},
 		description: {
 			type: String,
@@ -48,7 +54,13 @@ const optionValueSchema = new Schema(
 		},
 		ename: {
 			type: String,
-			required: true
+			required: true,
+			validate: {
+				validator(v) {
+					return (/^[a-z]+$/i).test(v);
+				},
+				message: '非英文，请正确填写!'
+			}
 		},
 		value:{
 			type: String,

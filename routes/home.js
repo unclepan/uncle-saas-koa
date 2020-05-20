@@ -1,4 +1,6 @@
 const router = require('koa-router')();
+const fuc = require('../test/model');
+
 
 router.get('/', async (ctx) => {
 	await ctx.render('index', {
@@ -16,4 +18,29 @@ router.get('/json', async (ctx) => {
 	};
 });
 
+
+router.get('/test', async (ctx) => {
+	let testModela = fuc({
+		name: {
+			type: String,
+			required: true
+		},
+		ename: {
+			type: String,
+
+		},
+		link: {
+			type: String,
+		},
+		icon: {
+			type: String,
+		}
+	}, 'testModela');
+
+	ctx.body  = await new testModela({
+		name: '2222',
+		xxxx:'vvvv'
+	}).save();
+	
+});
 module.exports = router;

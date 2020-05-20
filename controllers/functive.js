@@ -85,7 +85,7 @@ class FunctiveCtl {
 			icon: { type: 'string', required: false },
 			description: { type: 'string', required: false },
 			sort: { type: 'number', required: false },
-			type: { type: 'string', required: true },
+			type: { type: 'enum', required: true, values: ['male', 'female']  },
 			state: { type: 'boolean', required: true },
 			parent: { type: 'string', required: true },
 		});
@@ -103,7 +103,7 @@ class FunctiveCtl {
 			icon: { type: 'string', required: false },
 			description: { type: 'string', required: false },
 			sort: { type: 'number', required: false },
-			type: { type: 'string', required: false },
+			type: { type: 'enum', required: false, values: ['male', 'female'] },
 			state: { type: 'boolean', required: false },
 			parent: { type: 'string', required: false },
 			del: { type: 'boolean', required: false },
