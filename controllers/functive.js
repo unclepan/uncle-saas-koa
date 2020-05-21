@@ -85,10 +85,24 @@ class FunctiveCtl {
 			icon: { type: 'string', required: false },
 			description: { type: 'string', required: false },
 			sort: { type: 'number', required: false },
-			type: { type: 'enum', required: true, values: ['male', 'female']  },
+			type: { type: 'enum', required: true, values: ['menu', 'handle', 'module']  },
 			state: { type: 'boolean', required: true },
 			parent: { type: 'string', required: true },
+			moduleId: { type: 'string', required: false },
 		});
+
+		const {type, moduleId} = ctx.request.body;
+		if(type === 'module'){
+			if(!moduleId){
+				ctx.throw(409, '推送失败，需要传moduleId');
+			}
+			const functive = await Functive.findOne({ moduleId, del: false });
+			if (functive) {
+				ctx.throw(409, '推送失败，功能项已经存在此模块');
+			}
+
+		}
+
 		const functive = await new Functive({
 			...ctx.request.body,
 		}).save();
@@ -106,6 +120,7 @@ class FunctiveCtl {
 			type: { type: 'enum', required: false, values: ['male', 'female'] },
 			state: { type: 'boolean', required: false },
 			parent: { type: 'string', required: false },
+			moduleId: { type: 'string', required: false },
 			del: { type: 'boolean', required: false },
 		});
 		await ctx.state.functive.update(ctx.request.body);

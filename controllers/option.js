@@ -67,7 +67,7 @@ class OptionCtl {
 			description: { type: 'string', required: true },
 		});
 		const { ename } = ctx.request.body;
-		const repeatedOption = await Option.findOne({ ename });
+		const repeatedOption = await Option.findOne({ ename, del: false });
 		if (repeatedOption) {
 			ctx.throw(409, '选项英文名已经存在');
 		}
@@ -86,7 +86,7 @@ class OptionCtl {
 		});
 		const { ename } = ctx.request.body;
 		if(ename){
-			const repeatedOption = await Option.findOne({ ename });
+			const repeatedOption = await Option.findOne({ ename, del: false  });
 			if (repeatedOption && ctx.params.id !== repeatedOption.id) {
 				ctx.throw(409, '选项英文名已经存在');
 			}
@@ -163,7 +163,7 @@ class OptionCtl {
 			description: { type: 'string', required: true },
 		});
 		const { value } = ctx.request.body;
-		const repeatedOptionValue = await OptionValue.findOne({ value, optionId: ctx.params.id });
+		const repeatedOptionValue = await OptionValue.findOne({ value, optionId: ctx.params.id, del: false  });
 		if (repeatedOptionValue) {
 			ctx.throw(409, '选项值已经存在');
 		}
@@ -184,7 +184,7 @@ class OptionCtl {
 		});
 		const { value } = ctx.request.body;
 		if(value){
-			const repeatedOptionValue = await OptionValue.findOne({ value, optionId: ctx.params.id });
+			const repeatedOptionValue = await OptionValue.findOne({ value, optionId: ctx.params.id, del: false  });
 			if (repeatedOptionValue && ctx.params.vid !== repeatedOptionValue.id) {
 				ctx.throw(409, '选项值已经存在');
 			}

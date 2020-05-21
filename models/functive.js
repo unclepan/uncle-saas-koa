@@ -40,6 +40,10 @@ const functiveSchema = new Schema(
 			default: 'menu',
 			required: true
 		},
+		moduleId: {// 如果是从模块推送过来的才有moduleId
+			type: Schema.Types.ObjectId,
+			ref: 'BusinessModule'
+		},
 		state: { // 状态
 			type: Boolean,
 			required: true,

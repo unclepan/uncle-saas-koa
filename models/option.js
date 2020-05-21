@@ -14,7 +14,6 @@ const optionSchema = new Schema(
 		ename: {
 			type: String,
 			required: true,
-			unique: true,
 			validate: {
 				validator(v) {
 					return (/^[a-z]+$/i).test(v);

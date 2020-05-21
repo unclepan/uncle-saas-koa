@@ -8,6 +8,7 @@ const {
 
 const { 
 	find, 
+	findFunctive,
 	findById, 
 	create, 
 	update,
@@ -25,6 +26,8 @@ const filterType = async(ctx, next) =>{
 };
 
 router.get('/', find);
+
+router.get('/functive/state', findFunctive, find);
 
 router.post('/', new Auth(16).m, parameter, filterType, create);
 

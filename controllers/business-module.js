@@ -1,5 +1,7 @@
 const BusinessModule = require('../models/business-module');
+const Functive = require('../models/functive');
 const common = require('../common/db');
+const lodash = require('lodash');
 
 class BusinessModuleCtl {
 	async find(ctx) {
@@ -24,12 +26,46 @@ class BusinessModuleCtl {
 				.skip(page * perPage)
 				.sort({'updatedAt': -1});
 		} 
+
+		if(ctx.state.functive) {
+			data = lodash.cloneDeep(data).map(item => {
+				const functive = ctx.state.functive.some(i => {
+					return i.moduleId.toString() === item._id.toString();
+				});
+				const {
+					_id,
+					name, 
+					ename,
+					description, 
+					state, 
+					createdAt, 
+					updatedAt
+				} = item;
+
+				return {
+					_id,
+					name,
+					ename,
+					description,
+					state,
+					createdAt,
+					updatedAt,
+					functive
+				};
+			});
+		}
+		
 		ctx.body = {
 			data,
 			count,
 			current: page + 1,
 			size: perPage
 		}; 
+	}
+	async findFunctive(ctx, next) {
+		const functive = await Functive.find({type:'module', del:false});
+		ctx.state.functive = functive;
+		await next();
 	}
   
 	async checkBusinessModuleExist(ctx, next) {
@@ -74,7 +110,7 @@ class BusinessModuleCtl {
 		if(common.dbModelName.indexOf(ename) >= 0){
 			ctx.throw(409, '模块英文名与系统预定义dbName冲突');
 		}
-		const repeatedBusinessModule = await BusinessModule.findOne({ ename });
+		const repeatedBusinessModule = await BusinessModule.findOne({ ename, del: false  });
 		if (repeatedBusinessModule) {
 			ctx.throw(409, '模块英文名已经存在');
 		}
@@ -98,7 +134,7 @@ class BusinessModuleCtl {
 			ctx.throw(409, '模块英文名与系统预定义dbName冲突');
 		}
 		if(ename){
-			const repeatedBusinessModule = await BusinessModule.findOne({ ename });
+			const repeatedBusinessModule = await BusinessModule.findOne({ ename, del: false  });
 			if (repeatedBusinessModule && ctx.params.id !== repeatedBusinessModule.id) {
 				ctx.throw(409, '模块英文名已经存在');
 			}
