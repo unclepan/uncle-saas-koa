@@ -37,9 +37,46 @@ const businessModuleSchema = new Schema(
 						type: String,
 						required: true
 					},
-					fields: {
-						type: Array,
-						default: []
+					open: {
+						type: Boolean,
+						required: true
+					},
+					list: {
+						type: [
+							{
+								name: {
+									type: String,
+									required: true,
+									trim: true
+								},
+								value: Object,
+								label: {
+									type: String,
+									required: true,
+									trim: true
+								},
+								rules: Object,
+								describe: {
+									type: String,
+									trim: true
+								},
+								meta: Object,
+								event: {
+									emit: {
+										type: String,
+										trim: true
+									},
+									on: {
+										type: String,
+										trim: true
+									}
+								},
+								set: {
+									type: Boolean,
+									required: false
+								},
+							}
+						],
 					}
 				}
 			],

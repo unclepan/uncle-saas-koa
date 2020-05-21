@@ -2,7 +2,8 @@ const Router = require('koa-router');
 const router = new Router({ prefix:'/api/option'});
 const { Auth } = require('../middlewares/auth');
 const {
-	parameter
+	parameter,
+	softDelete
 } = require('../middlewares/filter');
 const { 
 	find,
@@ -12,7 +13,6 @@ const {
 	createOption, 
 	updateOption,
 	deleteOption,
-  
 	findOptionValue,
 	checkOptionValueExist,
 	createOptionValue,
@@ -32,10 +32,7 @@ router.patch('/:id', new Auth(16).m, checkOptionExist, parameter, updateOption);
 router.delete('/:id', new Auth(16).m, checkOptionExist, deleteOption);
 
 //软删除
-router.delete('/delete/:id', new Auth(16).m, checkOptionExist, async(ctx, next) => {
-	ctx.request.body.del = true;
-	await next();
-}, updateOption);
+router.delete('/delete/:id', new Auth(16).m, checkOptionExist, softDelete, updateOption);
 
 
 // 以下为选项值
@@ -50,11 +47,7 @@ router.patch('/value/:id/:vid', new Auth(16).m, checkOptionValueExist, parameter
 router.delete('/value/:vid', new Auth(16).m, checkOptionValueExist, deleteOptionValue);
 
 //软删除
-router.delete('/value/delete/:vid', new Auth(16).m, checkOptionValueExist, async(ctx, next) => {
-	ctx.request.body.del = true;
-	await next();
-}, updateOptionValue);
-
+router.delete('/value/delete/:vid', new Auth(16).m, checkOptionValueExist, softDelete, updateOptionValue);
 
 // 公共选项
 router.get('/select/:ename', find);

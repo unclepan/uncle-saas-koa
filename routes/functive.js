@@ -2,7 +2,8 @@ const Router = require('koa-router');
 const router = new Router({ prefix:'/api/functive'});
 const { Auth } = require('../middlewares/auth');
 const {
-	parameter
+	parameter,
+	softDelete
 } = require('../middlewares/filter');
 const { 
 	find, 
@@ -26,9 +27,6 @@ router.patch('/:id', new Auth(16).m, checkFunctiveExist, parameter, update);
 
 router.delete('/:id', new Auth(16).m, checkFunctiveExist, del);
 
-router.delete('/delete/:id', new Auth(16).m, checkFunctiveExist, async(ctx, next) => {
-	ctx.request.body.del = true;
-	await next();
-},update);
+router.delete('/delete/:id', new Auth(16).m, checkFunctiveExist, softDelete, update);
 
 module.exports = router;

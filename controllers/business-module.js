@@ -66,6 +66,7 @@ class BusinessModuleCtl {
 		ctx.verifyParams({
 			name: { type: 'string', required: true },
 			ename: { type: 'string', required: true },
+			module: {type:'array',required: false },
 			description: { type: 'string', required: false },
 			state: { type: 'boolean', required: false },
 		});
@@ -87,6 +88,7 @@ class BusinessModuleCtl {
 		ctx.verifyParams({
 			name: { type: 'string', required: false },
 			ename: { type: 'string', required: false },
+			module: {type:'array',required: false },
 			description: { type: 'string', required: false },
 			state: { type: 'boolean', required: false },
 			del: { type: 'boolean', required: false },

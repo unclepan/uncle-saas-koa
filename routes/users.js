@@ -1,10 +1,11 @@
-// const jwt = require('koa-jwt');
 const Router = require('koa-router');
 const router = new Router({ prefix: '/api/users' });
 const { Auth } = require('../middlewares/auth');
 const {
-	parameter
+	parameter,
+	softDelete
 } = require('../middlewares/filter');
+
 const {
 	find,
 	findById,
@@ -35,10 +36,7 @@ router.patch('/:id', new Auth().m, checkOwner,checkUserExist, parameter, update)
 
 router.delete('/:id', new Auth(32).m, checkUserExist , del); // 只有超级管理员可以删除用户，自己也不行
 
-router.delete('/delete/:id', new Auth(32).m, checkUserExist, async(ctx, next) => { //(软删除) 只有超级管理员可以删除用户，自己也不行
-	ctx.request.body.del = true;
-	await next();
-}, update);
+router.delete('/delete/:id', new Auth(32).m, checkUserExist, softDelete, update);
 
 router.get('/find/:id', findById);
 

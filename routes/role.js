@@ -2,7 +2,8 @@ const Router = require('koa-router');
 const router = new Router({ prefix:'/api/role'});
 const { Auth } = require('../middlewares/auth');
 const {
-	parameter
+	parameter,
+	softDelete
 } = require('../middlewares/filter');
 
 const { 
@@ -30,10 +31,7 @@ router.patch('/:id', new Auth(16).m, checkRoleExist, parameter, update);
 router.delete('/:id', new Auth(16).m, checkRoleExist, del);
 
 //软删除
-router.delete('/delete/:id', new Auth(16).m, checkRoleExist, async(ctx, next) => {
-	ctx.request.body.del = true;
-	await next();
-}, update);
+router.delete('/delete/:id', new Auth(16).m, checkRoleExist, softDelete, update);
 
 router.get('/:id/bind/user', findBindUser);
 
