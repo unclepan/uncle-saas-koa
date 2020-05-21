@@ -55,6 +55,11 @@ const businessModuleSchema = new Schema(
 									required: true,
 									trim: true
 								},
+								type: {
+									type: String,
+									required: true,
+									trim: true
+								},
 								rules: Object,
 								describe: {
 									type: String,
