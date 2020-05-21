@@ -60,12 +60,23 @@ const businessModuleSchema = new Schema(
 									required: true,
 									trim: true
 								},
-								rules: Object,
+								rules: {
+									type: Array,
+									default: []
+								},
 								describe: {
 									type: String,
 									trim: true
 								},
-								meta: Object,
+								meta: {
+									type: Object,
+									default: {}
+								},
+								options: {
+									type: String,
+									required: true,
+									default: '/api'
+								},
 								event: {
 									emit: {
 										type: String,
@@ -80,11 +91,17 @@ const businessModuleSchema = new Schema(
 									type: Boolean,
 									required: false
 								},
+								key: {
+									type: String,
+									trim: true,
+									required: true,
+								}
 							}
 						],
 					}
 				}
 			],
+			default: []
 		},
 		state: { // 状态
 			type: Boolean,
