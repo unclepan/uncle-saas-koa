@@ -92,7 +92,7 @@ class BusinessModuleCtl {
 		if(common.dbModelName.indexOf(ename) >= 0){
 			ctx.throw(409, '模块英文名与系统预定义dbName冲突');
 		}
-		const repeatedBusinessModule = await BusinessModule.findOne({ ename, del: false  });
+		const repeatedBusinessModule = await BusinessModule.findOne({ ename });
 		if (repeatedBusinessModule) {
 			ctx.throw(409, '模块英文名已经存在');
 		}
@@ -116,7 +116,7 @@ class BusinessModuleCtl {
 			ctx.throw(409, '模块英文名与系统预定义dbName冲突');
 		}
 		if(ename){
-			const repeatedBusinessModule = await BusinessModule.findOne({ ename, del: false  });
+			const repeatedBusinessModule = await BusinessModule.findOne({ ename  });
 			if (repeatedBusinessModule && ctx.params.id !== repeatedBusinessModule.id) {
 				ctx.throw(409, '模块英文名已经存在');
 			}

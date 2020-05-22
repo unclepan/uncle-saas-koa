@@ -91,6 +91,21 @@ const businessModuleSchema = new Schema(
 									type: Boolean,
 									required: false
 								},
+								required: {
+									type: Boolean,
+									required: false,
+									default: false
+								},
+								showToList: {
+									type: Boolean,
+									required: false,
+									default: true
+								},
+								searchAsList: {
+									type: Boolean,
+									required: false,
+									default: false
+								},
 								key: {
 									type: String,
 									trim: true,
