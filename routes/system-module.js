@@ -14,7 +14,7 @@ const {
 	update,
 	checkBusinessModuleExist,
 	delete: del,
-} = require('../controllers/business-module');
+} = require('../controllers/system-module');
 
 // 过滤掉type，此字段不允许更改
 const filterType = async(ctx, next) =>{ 

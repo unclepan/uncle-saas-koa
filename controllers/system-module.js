@@ -1,4 +1,4 @@
-const BusinessModule = require('../models/business-module');
+const BusinessModule = require('../models/system-module');
 const Functive = require('../models/functive');
 const common = require('../common/db');
 
