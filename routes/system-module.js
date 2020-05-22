@@ -12,7 +12,7 @@ const {
 	findById, 
 	create, 
 	update,
-	checkBusinessModuleExist,
+	checkSystemModuleExist,
 	delete: del,
 } = require('../controllers/system-module');
 
@@ -33,12 +33,12 @@ router.post('/', new Auth(16).m, parameter, filterType, create);
 
 router.get('/:id', findById);
 
-router.patch('/:id', new Auth(16).m, checkBusinessModuleExist, parameter, filterType, update);
+router.patch('/:id', new Auth(16).m, checkSystemModuleExist, parameter, filterType, update);
 
 //硬删除
-router.delete('/:id', new Auth(16).m, checkBusinessModuleExist, del);
+router.delete('/:id', new Auth(16).m, checkSystemModuleExist, del);
 
 //软删除
-router.delete('/delete/:id', new Auth(16).m, checkBusinessModuleExist, softDelete, update);
+router.delete('/delete/:id', new Auth(16).m, checkSystemModuleExist, softDelete, update);
 
 module.exports = router;

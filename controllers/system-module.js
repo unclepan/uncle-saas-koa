@@ -1,8 +1,8 @@
-const BusinessModule = require('../models/system-module');
+const SystemModule = require('../models/system-module');
 const Functive = require('../models/functive');
 const common = require('../common/db');
 
-class BusinessModuleCtl {
+class SystemModuleCtl {
 	async find(ctx) {
 		const { size = 10, current = 1, name, state } = ctx.query;
 		let page = Math.max(current * 1, 1) - 1;
@@ -11,9 +11,9 @@ class BusinessModuleCtl {
 		if(state){
 			conditions.state = state;
 		}
-		const count = await BusinessModule.countDocuments(conditions);
+		const count = await SystemModule.countDocuments(conditions);
 
-		let data = await BusinessModule.find(conditions)
+		let data = await SystemModule.find(conditions)
 			.limit(perPage)
 			.skip(page * perPage)
 			.sort({'updatedAt': -1})
@@ -21,7 +21,7 @@ class BusinessModuleCtl {
 
 		if(!data.length && page > 0){
 			page = 0;
-			data = await BusinessModule.find(conditions)
+			data = await SystemModule.find(conditions)
 				.limit(perPage)
 				.skip(page * perPage)
 				.sort({'updatedAt': -1})
@@ -50,12 +50,12 @@ class BusinessModuleCtl {
 		await next();
 	}
   
-	async checkBusinessModuleExist(ctx, next) {
-		const businessModule = await BusinessModule.findById(ctx.params.id);
-		if (!businessModule) {
+	async checkSystemModuleExist(ctx, next) {
+		const systemModule = await SystemModule.findById(ctx.params.id).select('+del');
+		if (!systemModule || systemModule.del) {
 			ctx.throw(404, '当前模块不存在');
 		}
-		ctx.state.businessModule = businessModule;
+		ctx.state.systemModule = systemModule;
 		await next();
 	}
   
@@ -71,13 +71,13 @@ class BusinessModuleCtl {
 			.filter((f) => f)
 			.map((f) => f)
 			.join(' ');
-		const role = await BusinessModule.findById(ctx.params.id)
-			.select(selectFields)
+		const sm = await SystemModule.findById(ctx.params.id)
+			.select(`${selectFields} +del`)
 			.populate(populateStr);
-		if (!role) {
+		if (!sm || sm.del) {
 			ctx.throw(404, '当前模块不存在');
 		}
-		ctx.body = role;
+		ctx.body = sm;
 	}
   
 	async create(ctx) {
@@ -92,14 +92,14 @@ class BusinessModuleCtl {
 		if(common.dbModelName.indexOf(ename) >= 0){
 			ctx.throw(409, '模块英文名与系统预定义dbName冲突');
 		}
-		const repeatedBusinessModule = await BusinessModule.findOne({ ename });
-		if (repeatedBusinessModule) {
+		const repeatedSystemModule = await SystemModule.findOne({ ename });
+		if (repeatedSystemModule) {
 			ctx.throw(409, '模块英文名已经存在');
 		}
-		const businessModule = await new BusinessModule({
+		const systemModule = await new SystemModule({
 			...ctx.request.body,
 		}).save();
-		ctx.body = businessModule;
+		ctx.body = systemModule;
 	}
   
 	async update(ctx) {
@@ -116,18 +116,18 @@ class BusinessModuleCtl {
 			ctx.throw(409, '模块英文名与系统预定义dbName冲突');
 		}
 		if(ename){
-			const repeatedBusinessModule = await BusinessModule.findOne({ ename  });
-			if (repeatedBusinessModule && ctx.params.id !== repeatedBusinessModule.id) {
+			const repeatedSystemModule = await SystemModule.findOne({ ename  });
+			if (repeatedSystemModule && ctx.params.id !== repeatedSystemModule.id) {
 				ctx.throw(409, '模块英文名已经存在');
 			}
 		}
-		await ctx.state.businessModule.update(ctx.request.body);
-		ctx.body = ctx.state.businessModule;
+		await ctx.state.systemModule.update(ctx.request.body);
+		ctx.body = ctx.state.systemModule;
 	}
   
 	async delete(ctx) {
-		await BusinessModule.findByIdAndRemove(ctx.params.id);
+		await SystemModule.findByIdAndRemove(ctx.params.id);
 		ctx.status = 204;
 	} 
 }
-module.exports = new BusinessModuleCtl();
+module.exports = new SystemModuleCtl();

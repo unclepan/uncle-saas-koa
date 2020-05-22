@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema, model } = mongoose;
 
-const businessModuleSchema = new Schema(
+const systemModuleSchema = new Schema(
 	{
 		__v: {
 			type: Number,
@@ -89,21 +89,21 @@ const businessModuleSchema = new Schema(
 								},
 								set: {
 									type: Boolean,
-									required: false
+									default: false
 								},
 								required: {
 									type: Boolean,
-									required: false,
+									required: true,
 									default: false
 								},
 								showToList: {
 									type: Boolean,
-									required: false,
+									required: true,
 									default: true
 								},
 								searchAsList: {
 									type: Boolean,
-									required: false,
+									required: true,
 									default: false
 								},
 								key: {
@@ -133,4 +133,4 @@ const businessModuleSchema = new Schema(
 	{ timestamps: true }
 );
 
-module.exports = model('BusinessModule', businessModuleSchema);
+module.exports = model('SystemModule', systemModuleSchema);

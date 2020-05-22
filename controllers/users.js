@@ -110,9 +110,9 @@ class UsersCtl {
 			.map((f) => f)
 			.join(' ');
 		const user = await User.findById(ctx.params.id)
-			.select(selectFields)
+			.select(`${selectFields} +del`)
 			.populate(populateStr); // select是mongoose语法
-		if (!user) {
+		if (!user || user.del) {
 			ctx.throw(404, '用户不存在');
 		}
 		ctx.body = user;
@@ -242,8 +242,8 @@ class UsersCtl {
 
 	async checkUserExist(ctx, next) {
 		// 检查用户存在与否，跟业务代码强相关，所以写在这里
-		const user = await User.findById(ctx.params.id);
-		if (!user) {
+		const user = await User.findById(ctx.params.id).select('+del');
+		if (!user || user.del) {
 			ctx.throw(404, '用户不存在');
 		}
 		await next();

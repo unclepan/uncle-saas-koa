@@ -1,6 +1,6 @@
 module.exports = {
 	dbModelName: [
-		'BusinessModule',
+		'SystemModule',
 		'Functive',
 		'Monitor',
 		'Option',

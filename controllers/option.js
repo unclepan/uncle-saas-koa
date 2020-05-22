@@ -31,8 +31,8 @@ class OptionCtl {
 		}; 
 	}
 	async checkOptionExist(ctx, next) {
-		const option = await Option.findById(ctx.params.id);
-		if (!option) {
+		const option = await Option.findById(ctx.params.id).select('+del');
+		if (!option || option.del) {
 			ctx.throw(404, '当前选项不存在');
 		}
 		ctx.state.option = option;
@@ -52,9 +52,9 @@ class OptionCtl {
 			.map((f) => f)
 			.join(' ');
 		const option = await Option.findById(ctx.params.id)
-			.select(selectFields)
+			.select(`${selectFields} +del`)
 			.populate(populateStr);
-		if (!option) {
+		if (!option || option.del) {
 			ctx.throw(404, '当前选项不存在');
 		}
 		ctx.body = option;
@@ -129,8 +129,8 @@ class OptionCtl {
 	}
   
 	async checkOptionValueExist(ctx, next) {
-		const optionValue = await OptionValue.findById(ctx.params.vid);
-		if (!optionValue) {
+		const optionValue = await OptionValue.findById(ctx.params.vid).select('+del');
+		if (!optionValue || optionValue.del) {
 			ctx.throw(404, '当前选项值不存在');
 		}
 		ctx.state.optionValue = optionValue;
@@ -150,8 +150,11 @@ class OptionCtl {
 			.map((f) => f)
 			.join(' ');
 		const optionValue = await OptionValue.findById(ctx.params.vid)
-			.select(selectFields)
+			.select(`${selectFields} +del`)
 			.populate(populateStr);
+		if (!optionValue || optionValue.del) {
+			ctx.throw(404, '当前选项值不存在');
+		}
 		ctx.body = optionValue;
 	}
   
