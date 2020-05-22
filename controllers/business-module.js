@@ -1,7 +1,6 @@
 const BusinessModule = require('../models/business-module');
 const Functive = require('../models/functive');
 const common = require('../common/db');
-const lodash = require('lodash');
 
 class BusinessModuleCtl {
 	async find(ctx) {
@@ -17,44 +16,26 @@ class BusinessModuleCtl {
 		let data = await BusinessModule.find(conditions)
 			.limit(perPage)
 			.skip(page * perPage)
-			.sort({'updatedAt': -1});
+			.sort({'updatedAt': -1})
+			.lean();
 
 		if(!data.length && page > 0){
 			page = 0;
 			data = await BusinessModule.find(conditions)
 				.limit(perPage)
 				.skip(page * perPage)
-				.sort({'updatedAt': -1});
+				.sort({'updatedAt': -1})
+				.lean();
 		} 
 
 		if(ctx.state.functive) {
-			data = lodash.cloneDeep(data).map(item => {
+			data = data.map(item => {
 				const functive = ctx.state.functive.some(i => {
 					return i.moduleId.toString() === item._id.toString();
 				});
-				const {
-					_id,
-					name, 
-					ename,
-					description, 
-					state, 
-					createdAt, 
-					updatedAt
-				} = item;
-
-				return {
-					_id,
-					name,
-					ename,
-					description,
-					state,
-					createdAt,
-					updatedAt,
-					functive
-				};
+				return { ...item, functive };
 			});
 		}
-		
 		ctx.body = {
 			data,
 			count,
@@ -62,6 +43,7 @@ class BusinessModuleCtl {
 			size: perPage
 		}; 
 	}
+
 	async findFunctive(ctx, next) {
 		const functive = await Functive.find({type:'module', del:false});
 		ctx.state.functive = functive;
