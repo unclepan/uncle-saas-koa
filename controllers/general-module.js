@@ -42,7 +42,12 @@ class GeneralModuleCtl {
 		const modelInstance = generalModuleFunc.init(ins, systemModule.ename);
 		ctx.state.modelInstance = modelInstance;
 		ctx.state.moduleFields = moduleFields;
+		ctx.state.systemModule = systemModule;
 		await next();
+	}
+
+	async module(ctx) {
+		ctx.body = ctx.state.systemModule;
 	}
 
 	async create(ctx) {
@@ -68,20 +73,31 @@ class GeneralModuleCtl {
 		const conditions = {del: false};
 		const count = await ctx.state.modelInstance.countDocuments(conditions);
 
-		let data = await ctx.state.modelInstance.find(conditions)
+		let row = await ctx.state.modelInstance.find(conditions)
 			.limit(perPage)
 			.skip(page * perPage)
 			.sort({'updatedAt': -1});
 
-		if(!data.length && page > 0){
+		if(!row.length && page > 0){
 			page = 0;
-			data = await ctx.state.modelInstance.find(conditions)
+			row = await ctx.state.modelInstance.find(conditions)
 				.limit(perPage)
 				.skip(page * perPage)
 				.sort({'updatedAt': -1});
 		} 
+
+		const column = ctx.state.moduleFields.map(item => {
+			return { prop: item.name, label: item.label, 'min-width': '180' };
+		});
+
 		ctx.body = {
-			data,
+			moduleName: ctx.state.systemModule.name,
+			data:{
+				column,
+				row,
+				operation: [],
+				meta: {},
+			},
 			count,
 			current: page + 1,
 			size: perPage

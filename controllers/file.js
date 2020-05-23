@@ -10,6 +10,20 @@ class FileCtl {
 			basename
 		};
 	}
+
+	async rename(ctx) {
+		const { folder, fileName } = ctx.request.body;
+		const fo = path.join(__dirname, '../uploads/transfer', fileName);
+		const to = path.join(__dirname, '../uploads', folder, fileName);
+		fs.rename(fo,to , (error) => {
+			if(error){
+				ctx.throw(501, error);
+			}
+		});
+		ctx.status = 204;
+		
+	}
+
 	async cropAvatar(ctx,next){
 		ctx.verifyParams({
 			basename: { type: 'string', required: true },

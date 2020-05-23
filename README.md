@@ -25,6 +25,9 @@
 
 
 优化 createModelInstance 方法
+
+
+前端表单还有一个事件通信要处理
 ```
 
 ## 角色
