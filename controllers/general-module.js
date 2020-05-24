@@ -4,16 +4,16 @@ const generalModuleFunc = require('../models/general-module');
 const lodash = require('lodash');
 
 const fieldDataTypeEnum = {
-	TEXT: { name:'string', type: String },
-	TEXTAREA: { name:'string', type: String },
-	NUMBER: { name:'number', type: Number },
-	CURRENCY: { name:'number', type: Number },
-	PERCENT: { name:'number', type: Number },
-	DATE: { name:'date', type: Date },
-	SELECT: { name:'string', type: String },
-	SWITCH: { name:'boolean', type: Boolean },
-	UPLOAD: { name:'string', type: String },
-	RADIO: { name:'string', type: String },
+	TEXT: { verify:'string', type: String },
+	TEXTAREA: { verify:'string', type: String },
+	NUMBER: { verify:'number', type: Number },
+	CURRENCY: { verify:'number', type: Number },
+	PERCENT: { verify:'number', type: Number },
+	DATE: { verify:'number', type: Number },
+	SELECT: { verify:'string', type: String },
+	SWITCH: { verify:'boolean', type: Boolean },
+	UPLOAD: { verify:'string', type: String },
+	RADIO: { verify:'string', type: String },
 };
 
 class GeneralModuleCtl {
@@ -40,9 +40,9 @@ class GeneralModuleCtl {
 
 		// 3.生成schema，并且返回model
 		const modelInstance = generalModuleFunc.init(ins, systemModule.ename);
+
 		ctx.state.modelInstance = modelInstance;
 		ctx.state.moduleFields = moduleFields;
-		ctx.state.systemModule = systemModule;
 		await next();
 	}
 
@@ -53,7 +53,7 @@ class GeneralModuleCtl {
 	async create(ctx) {
 		const verifyParams = ctx.state.moduleFields.reduce((obj, item) => {
 			obj[item.name] = {
-				type: fieldDataTypeEnum[item.type].name,
+				type: fieldDataTypeEnum[item.type].verify,
 				required: item.required
 			};
 			return obj;
@@ -87,7 +87,8 @@ class GeneralModuleCtl {
 		} 
 
 		const column = ctx.state.moduleFields.map(item => {
-			return { prop: item.name, label: item.label, 'min-width': '180' };
+			const { name: prop, label, type: columnType, showToList, searchAsList, options } = item;
+			return { prop, label, columnType, showToList, searchAsList, options };
 		});
 
 		ctx.body = {
@@ -138,7 +139,7 @@ class GeneralModuleCtl {
 	async update(ctx) {
 		const verifyParams = ctx.state.moduleFields.reduce((obj, item) => {
 			obj[item.name] = {
-				type: fieldDataTypeEnum[item.type].name,
+				type: fieldDataTypeEnum[item.type].verify,
 				required: false
 			};
 			return obj;
