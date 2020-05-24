@@ -21,7 +21,8 @@ const {
 	checkUserRelationRoleExist,
 	createBindRole,
 	removeBindRole,
-	checkUserExist
+	checkUserExist,
+	userInfo
 } = require('../controllers/users');
 
 const { 
@@ -54,7 +55,7 @@ router.get('/info',
 		ctx.params.id = ctx.state.user._id;
 		await next();
 	}, 
-	findById
+	userInfo
 );
 
 router.get('/:id/bind/role', findBindRole);

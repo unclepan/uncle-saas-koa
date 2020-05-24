@@ -117,7 +117,7 @@ class FunctiveCtl {
 			icon: { type: 'string', required: false },
 			description: { type: 'string', required: false },
 			sort: { type: 'number', required: false },
-			type: { type: 'enum', required: false, values: ['male', 'female'] },
+			type: { type: 'enum', required: false, values: ['menu', 'handle', 'module'] },
 			state: { type: 'boolean', required: false },
 			parent: { type: 'string', required: false },
 			moduleId: { type: 'string', required: false },

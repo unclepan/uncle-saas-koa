@@ -4,6 +4,7 @@ const Redis = require('koa-redis');
 const User = require('../models/users');
 const Token = require('../models/token');
 const UserRelationRole = require('../models/user-relation-role');
+const Functive = require('../models/functive');
 const { secret, smtp } = require('../config');
 const Store = new Redis().client;
 
@@ -254,7 +255,6 @@ class UsersCtl {
 	async findBindRole(ctx) {
 		ctx.body = await UserRelationRole.find({user: ctx.params.id});
 	}
-
 	checkUserRelationRoleExist(con) {
 		return async (ctx, next) => {
 			const { roles } = ctx.request.body;
@@ -300,6 +300,46 @@ class UsersCtl {
 			}
 		);
 		ctx.status = 204;
+	}
+
+
+	async userInfo(ctx) {
+		const user = await User.findById(ctx.params.id).select('+del').lean();
+		if (!user || user.del) {
+			ctx.throw(404, '用户不存在');
+		}
+		const userRelationRole = await UserRelationRole.find({user: user._id}).populate('role');
+		const roles = userRelationRole.reduce((arr, item) => {
+			let a = arr;
+			a = a.concat(item.role.functive);
+			return a;
+		},[]);
+		const conditions = roles.map(item => {
+			return {_id: item, del: false};
+		});
+		let functives = [];
+		if(conditions.length){
+			functives =  await Functive.find({
+				$or: conditions
+			});
+		}
+
+		const en = {};
+		const zh = {};
+		const menus = functives.map(item => {
+			en[item.ename] = item.ename;
+			zh[item.ename] = item.name;
+			return {
+				id: item._id,
+				menuName: `far.${item.ename}`,
+				invokeUrl: item.link,
+				iconStr: 'el-icon-s-home',
+				subMenus: [],
+			};
+		});
+		
+		
+		ctx.body = {...user, menus, en, zh};
 	}
 
 }
