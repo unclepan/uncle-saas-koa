@@ -4,7 +4,6 @@ module.exports = {
 		data.forEach(function (item) {
 			delete item.subMenus;
 		});
-
 		// 将数据存储为 以id为KEY的map索引数据列 
 		const map = {};
 		data.forEach(function (item) {

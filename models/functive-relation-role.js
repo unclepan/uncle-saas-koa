@@ -22,4 +22,4 @@ const functiveRelationRoleSchema = new Schema(
 	{ timestamps: true }
 );
 
-module.exports = model('functiveRelationRole', functiveRelationRoleSchema);
+module.exports = model('FunctiveRelationRole', functiveRelationRoleSchema);

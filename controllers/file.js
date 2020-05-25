@@ -11,6 +11,7 @@ class FileCtl {
 		};
 	}
 
+	// 移动文件
 	async rename(ctx) {
 		const { folder, fileName } = ctx.request.body;
 		const fo = path.join(__dirname, '../uploads/transfer', fileName);
@@ -21,9 +22,9 @@ class FileCtl {
 			}
 		});
 		ctx.status = 204;
-		
 	}
 
+	// 裁剪头像
 	async cropAvatar(ctx,next){
 		ctx.verifyParams({
 			basename: { type: 'string', required: true },
@@ -48,7 +49,8 @@ class FileCtl {
 			ctx.throw(401, '默认头像不可修改');
 		}	
 	}
-
+	
+	// 裁剪静态方法
 	static crop(formLink, toLink, cropperData, newPic) {
 		const { width, height, x, y } = cropperData;
 		return new Promise(function (resolve, reject) {

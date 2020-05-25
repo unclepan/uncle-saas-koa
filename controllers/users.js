@@ -77,7 +77,7 @@ class UsersCtl {
 		const { size = 10, current = 1, name = '', email = '' } = ctx.query;
 		let page = Math.max(current * 1, 1) - 1;
 		const perPage = Math.max(size * 1, 1);
-		const conditions = {del: false, name: new RegExp(name), email: new RegExp(email)};
+		const conditions = { del: false, name: new RegExp(name), email: new RegExp(email)};
 		const count = await User.countDocuments(conditions);
 
 		let data = await User.find(conditions)
@@ -125,13 +125,11 @@ class UsersCtl {
 		ctx.verifyParams({
 			name: { type: 'string', required: true },
 			password: { type: 'string', required: true },
-			birth: { type: 'dateTime', required: false },
 			email: { type: 'email', required: true },
 			code: { type: 'string', required: true }
 		});
 		const { name, password, email, code } = ctx.request.body;
-
-		if (code) {
+		if (code) { // 对比邮箱验证code
 			const saveCode = await Store.hget(`nodemail:${name}`, 'code');
 			const saveExpire = await Store.hget(`nodemail:${name}`, 'expire');
 			if (code === saveCode) {
@@ -144,15 +142,18 @@ class UsersCtl {
 		} else {
 			ctx.throw(400, '请填写验证码');
 		}
-		const repeatedUser = await User.findOne({ name });
+
+		const repeatedUser = await User.findOne({ name, del: false, });
 		if (repeatedUser) {
 			ctx.throw(409, '用户已经存在');
 		}
+
+		// 创建用户只介绍3个字段，传其他信息无效，只能默认为普通用户
 		const user = await new User({ name, password, email }).save();
 		ctx.body = user;
 	}
 	async checkOwner(ctx, next) {
-		// 自己编写的授权，跟业务代码强相关，所以写在这里
+		// 只能修改自己的用户信息，自己编写的授权，跟业务代码强相关，所以写在这里
 		if (ctx.params.id !== ctx.state.user._id) {
 			ctx.throw(403, '无权限');
 		}
@@ -162,6 +163,7 @@ class UsersCtl {
 	async update(ctx) {
 		ctx.verifyParams({
 			name: { type: 'string', required: false },
+			avatar: { type: 'string', required: false },
 			birth: { type: 'dateTime', required: false },
 			gender: { type: 'enum', required: false, values: ['male', 'female'] },
 			introduce: { type: 'string', required: false },
@@ -183,10 +185,10 @@ class UsersCtl {
 		} else {
 			delete ctx.request.body.password;
 		}
-		if (email) {
+		if (email) { // 不允许修改邮箱
 			delete ctx.request.body.email;
 		}
-		if (scope) {
+		if (scope) { // 不允许修改权限
 			delete ctx.request.body.scope;
 		}
 		const user = await User.findByIdAndUpdate(ctx.params.id, ctx.request.body);
@@ -252,11 +254,11 @@ class UsersCtl {
 		await next();
 	}
 
-
 	// 查询该用户关联了哪些角色
 	async findBindRole(ctx) {
-		ctx.body = await UserRelationRole.find({user: ctx.params.id});
+		ctx.body = await UserRelationRole.find({ user: ctx.params.id });
 	}
+
 	checkUserRelationRoleExist(con) {
 		return async (ctx, next) => {
 			const { roles } = ctx.request.body;
@@ -304,7 +306,6 @@ class UsersCtl {
 		ctx.status = 204;
 	}
 
-
 	async userInfo(ctx) {
 		// 1. 找到当前登陆的用户信息
 		const user = await User.findById(ctx.params.id).select('+del').lean();
@@ -348,6 +349,5 @@ class UsersCtl {
 			zh: jsonData.zh
 		};
 	}
-
 }
 module.exports = new UsersCtl();

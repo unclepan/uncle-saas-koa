@@ -33,10 +33,12 @@ router.get('/', find);
 
 router.post('/', parameter, create);
 
-router.patch('/:id', new Auth().m, checkOwner,checkUserExist, parameter, update);
+router.patch('/:id', new Auth(8).m, checkOwner, checkUserExist, parameter, update);
 
-router.delete('/:id', new Auth(32).m, checkUserExist , del); // 只有超级管理员可以删除用户，自己也不行
+// 强删除 只有超级管理员可以删除用户，自己也不行
+router.delete('/:id', new Auth(32).m, checkUserExist , del);
 
+// 软删除
 router.delete('/delete/:id', new Auth(32).m, checkUserExist, softDelete, update);
 
 router.get('/find/:id', findById);
@@ -69,6 +71,6 @@ router.post('/:id/remove/bind/role', new Auth(16).m, checkUserRelationRoleExist(
 // 2.是否是本人
 // 3.对头像文件进行处理（裁剪，转存）
 // 4.更改数据库用户头像链接字段
-router.post('/:id/update/avatar',new Auth().m, checkOwner, cropAvatar, update);
+router.post('/:id/update/avatar',new Auth(8).m, checkOwner, cropAvatar, update);
 
 module.exports = router;
