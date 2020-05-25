@@ -313,10 +313,12 @@ class UsersCtl {
 			ctx.throw(404, '用户不存在');
 		}
 		// 2. 该用户关联了哪些角色
-		const userRelationRole = await UserRelationRole.find({user: user._id}).lean();
-
+		const userRelationRole = await UserRelationRole.find({user: user._id}).populate('role').lean();
+		const userRelationRoleFilter = userRelationRole.filter(item => {
+			return item.role.state;
+		});
 		// 3. 拼接搜索条件
-		const conditions = userRelationRole.map(item => {
+		const conditions = userRelationRoleFilter.map(item => {
 			return { role: item.role };
 		});
 
@@ -331,7 +333,12 @@ class UsersCtl {
 			const fr = await FunctiveRelationRole.find({
 				$or: conditions
 			}).populate('functive').lean();
-			let frList = fr.map(item => {
+
+			const frFilter = fr.filter(item => {
+				return item.functive.state;
+			});
+
+			let frList = frFilter.map(item => {
 				return item.functive;
 			});	
 
