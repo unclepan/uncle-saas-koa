@@ -1,5 +1,6 @@
 const Role = require('../models/role');
 const UserRelationRole = require('../models/user-relation-role');
+const FunctiveRelationRole = require('../models/functive-relation-role');
 
 class RoleCtl {
 	async find(ctx) {
@@ -68,7 +69,6 @@ class RoleCtl {
 			ename: { type: 'string', required: true },
 			description: { type: 'string', required: false },
 			state: { type: 'boolean', required: true },
-			functive: { type: 'array', required: false },
 		});
 		const role = await new Role({
 			...ctx.request.body,
@@ -82,7 +82,6 @@ class RoleCtl {
 			ename: { type: 'string', required: false },
 			description: { type: 'string', required: false },
 			state: { type: 'boolean', required: false },
-			functive: { type: 'array', required: false },
 			del: { type: 'boolean', required: false },
 		});
 		await ctx.state.role.update(ctx.request.body);
@@ -144,6 +143,32 @@ class RoleCtl {
 			}
 		);
 		ctx.status = 204;
+	}
+
+
+
+	// 查询该角色关联了哪些功能
+	async findBindFunctive(ctx) {
+		ctx.body = await FunctiveRelationRole.find({role: ctx.params.id});
+	}
+
+	// 创建角色与功能的关联
+	async createBindFunctive(ctx) {
+		ctx.verifyParams({
+			functives: { type: 'array', required: true },
+		});
+		const { functives } = ctx.request.body;
+		const docs = functives.map(item => {
+			return {role: ctx.params.id, functive: item };
+		});
+		const relations = await FunctiveRelationRole.insertMany(docs);
+		ctx.body = relations;
+	}
+
+	// 取消角色与功能的关联
+	async removeBindFunctive(ctx, next) {
+		await FunctiveRelationRole.deleteMany({role: ctx.params.id});
+		await next();
 	}
   
 }

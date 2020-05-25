@@ -31,7 +31,7 @@ class FunctiveCtl {
 		}; 
 	}
 	async findTree(ctx){
-		let data = await Functive.find({del: false});
+		let data = await Functive.find({ del: false });
 
 		function treeData(){
 			let cloneData = JSON.parse(JSON.stringify(data));
@@ -85,13 +85,13 @@ class FunctiveCtl {
 			icon: { type: 'string', required: false },
 			description: { type: 'string', required: false },
 			sort: { type: 'number', required: false },
-			type: { type: 'enum', required: true, values: ['menu', 'handle', 'module']  },
+			type: { type: 'enum', required: true, values: ['menu', 'handle']  },
 			state: { type: 'boolean', required: true },
 			parent: { type: 'string', required: true },
 			moduleId: { type: 'string', required: false },
 		});
 
-		const {type, moduleId} = ctx.request.body;
+		const {type, moduleId,  ename} = ctx.request.body;
 		if(type === 'module'){
 			if(!moduleId){
 				ctx.throw(409, '推送失败，需要传moduleId');
@@ -100,7 +100,11 @@ class FunctiveCtl {
 			if (functive) {
 				ctx.throw(409, '推送失败，功能项已经存在此模块');
 			}
+		}
 
+		const repeatedFunctive= await Functive.findOne({ ename });
+		if (repeatedFunctive) {
+			ctx.throw(409, '英文名已经重复');
 		}
 
 		const functive = await new Functive({
@@ -117,17 +121,23 @@ class FunctiveCtl {
 			icon: { type: 'string', required: false },
 			description: { type: 'string', required: false },
 			sort: { type: 'number', required: false },
-			type: { type: 'enum', required: false, values: ['menu', 'handle', 'module'] },
+			type: { type: 'enum', required: false, values: ['menu', 'handle'] },
 			state: { type: 'boolean', required: false },
 			parent: { type: 'string', required: false },
 			moduleId: { type: 'string', required: false },
 			del: { type: 'boolean', required: false },
 		});
+
+		const { ename } = ctx.request.body;
+		if(ename){
+			const repeatedFunctive = await Functive.findOne({ ename  });
+			if (repeatedFunctive && ctx.params.id !== repeatedFunctive.id) {
+				ctx.throw(409, '英文名已经重复');
+			}
+		}
 		await ctx.state.functive.update(ctx.request.body);
 		ctx.body = ctx.state.functive;
 	}
-  
-
 	async delete(ctx) {
 		await Functive.findByIdAndRemove(ctx.params.id);
 		ctx.status = 204;

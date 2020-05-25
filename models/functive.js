@@ -36,7 +36,7 @@ const functiveSchema = new Schema(
 		},
 		type: { // 功能类型
 			type: String,
-			enum: ['menu', 'handle', 'module'],
+			enum: ['menu', 'handle'],
 			default: 'menu',
 			required: true
 		},

@@ -29,14 +29,6 @@ const roleSchema = new Schema(
 			required: true,
 			default: false
 		},
-		functive: { // 已分配的功能项
-			type: [
-				{
-					type: Schema.Types.ObjectId,
-					ref: 'Functive',
-				}
-			]
-		},
 		del: { // 软删除
 			type: Boolean,
 			required: true,
