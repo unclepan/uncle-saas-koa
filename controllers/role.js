@@ -145,8 +145,6 @@ class RoleCtl {
 		ctx.status = 204;
 	}
 
-
-
 	// 查询该角色关联了哪些功能
 	async findBindFunctive(ctx) {
 		ctx.body = await FunctiveRelationRole.find({role: ctx.params.id});
