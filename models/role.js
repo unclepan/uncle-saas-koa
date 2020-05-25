@@ -33,7 +33,6 @@ const roleSchema = new Schema(
 			type: Boolean,
 			required: true,
 			default: false,
-			select: false
 		},
 	},
 	{ timestamps: true }

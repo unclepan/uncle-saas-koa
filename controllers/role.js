@@ -34,7 +34,7 @@ class RoleCtl {
 	}
   
 	async checkRoleExist(ctx, next) {
-		const role = await Role.findById(ctx.params.id).select('+del');
+		const role = await Role.findById(ctx.params.id);
 		if (!role || role.del) {
 			ctx.throw(404, '当前角色不存在');
 		}
@@ -55,7 +55,7 @@ class RoleCtl {
 			.map((f) => f)
 			.join(' ');
 		const role = await Role.findById(ctx.params.id)
-			.select(`${selectFields} +del`)
+			.select(selectFields)
 			.populate(populateStr);
 		if (!role || role.del) {
 			ctx.throw(404, '当前角色不存在');

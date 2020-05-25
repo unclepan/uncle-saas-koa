@@ -315,7 +315,7 @@ class UsersCtl {
 		// 2. 该用户关联了哪些角色
 		const userRelationRole = await UserRelationRole.find({user: user._id}).populate('role').lean();
 		const userRelationRoleFilter = userRelationRole.filter(item => {
-			return item.role.state;
+			return item.role.state && !item.role.del;
 		});
 		// 3. 拼接搜索条件
 		const conditions = userRelationRoleFilter.map(item => {
@@ -335,7 +335,7 @@ class UsersCtl {
 			}).populate('functive').lean();
 
 			const frFilter = fr.filter(item => {
-				return item.functive.state;
+				return item.functive.state && !item.functive.del;
 			});
 
 			let frList = frFilter.map(item => {

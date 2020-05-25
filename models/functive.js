@@ -57,8 +57,7 @@ const functiveSchema = new Schema(
 		del: { // 软删除
 			type: Boolean,
 			required: true,
-			default: false,
-			select: false
+			default: false
 		},
 	},
 	{ timestamps: true }
