@@ -31,7 +31,7 @@ class SystemModuleCtl {
 		if(ctx.state.functive) {
 			data = data.map(item => {
 				const functive = ctx.state.functive.some(i => {
-					return i.moduleId.toString() === item._id.toString();
+					return i.moduleId ? i.moduleId.toString() === item._id.toString() : false;
 				});
 				return { ...item, functive };
 			});
@@ -45,7 +45,7 @@ class SystemModuleCtl {
 	}
 
 	async findFunctive(ctx, next) {
-		const functive = await Functive.find({type:'module', del:false});
+		const functive = await Functive.find({type:'menu', del:false});
 		ctx.state.functive = functive;
 		await next();
 	}
@@ -92,7 +92,7 @@ class SystemModuleCtl {
 		if(common.dbModelName.indexOf(ename) >= 0){
 			ctx.throw(409, '模块英文名与系统预定义dbName冲突');
 		}
-		const repeatedSystemModule = await SystemModule.findOne({ ename });
+		const repeatedSystemModule = await SystemModule.findOne({ ename, del: false  });
 		if (repeatedSystemModule) {
 			ctx.throw(409, '模块英文名已经存在');
 		}
@@ -116,7 +116,7 @@ class SystemModuleCtl {
 			ctx.throw(409, '模块英文名与系统预定义dbName冲突');
 		}
 		if(ename){
-			const repeatedSystemModule = await SystemModule.findOne({ ename  });
+			const repeatedSystemModule = await SystemModule.findOne({ ename, del: false   });
 			if (repeatedSystemModule && ctx.params.id !== repeatedSystemModule.id) {
 				ctx.throw(409, '模块英文名已经存在');
 			}

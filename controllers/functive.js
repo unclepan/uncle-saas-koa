@@ -102,7 +102,7 @@ class FunctiveCtl {
 			}
 		}
 
-		const repeatedFunctive= await Functive.findOne({ ename });
+		const repeatedFunctive= await Functive.findOne({ ename, del: false });
 		if (repeatedFunctive) {
 			ctx.throw(409, '英文名已经重复');
 		}
@@ -130,7 +130,7 @@ class FunctiveCtl {
 
 		const { ename } = ctx.request.body;
 		if(ename){
-			const repeatedFunctive = await Functive.findOne({ ename  });
+			const repeatedFunctive = await Functive.findOne({ ename, del: false });
 			if (repeatedFunctive && ctx.params.id !== repeatedFunctive.id) {
 				ctx.throw(409, '英文名已经重复');
 			}
