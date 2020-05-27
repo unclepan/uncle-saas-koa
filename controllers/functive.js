@@ -48,8 +48,8 @@ class FunctiveCtl {
 	}
   
 	async checkFunctiveExist(ctx, next) {
-		const functive = await Functive.findById(ctx.params.id);
-		if (!functive) {
+		const functive = await Functive.findById(ctx.params.id).select('+del');
+		if (!functive || functive.del) {
 			ctx.throw(404, '当前功能项不存在');
 		}
 		ctx.state.functive = functive;
@@ -69,9 +69,9 @@ class FunctiveCtl {
 			.map((f) => f)
 			.join(' ');
 		const functive = await Functive.findById(ctx.params.id)
-			.select(selectFields)
+			.select(`${selectFields} +del`)
 			.populate(populateStr);
-		if (!functive) {
+		if (!functive || functive.del) {
 			ctx.throw(404, '当前功能项不存在');
 		}
 		ctx.body = functive;
