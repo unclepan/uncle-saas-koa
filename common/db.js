@@ -1,5 +1,6 @@
 module.exports = {
 	dbModelName: [
+		'Message',
 		'FunctiveRelationRole',
 		'Functive',
 		'Monitor',
