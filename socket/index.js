@@ -2,6 +2,7 @@ const Message = require('../models/message');
 
 module.exports = function(io){
 	let users = [];
+	let discUsers = [];
 	io.on('connection', async socket => {
 		socket.on('one', async() => {
 			let res = await Message.find({}).populate('user');
@@ -10,17 +11,25 @@ module.exports = function(io){
 		
 		//新人进来在线人数
 		socket.on('users', data => {
-			const n = users.some((item) => {
-				return data._id === item._id;
+			users = users.filter((item) => {
+				return data._id !== item._id;
 			});
-			if(!n){
-				users.push(data);
-			}
+			users.push(data);
 			io.emit('users', users); //将消息发送给所有人。
+		});
+
+		// 某个客户端断开之后，查看还有哪些人在线
+		socket.on('discUsers', data => {
+			discUsers.push(data);
+			if(discUsers.length + 1 === users.length) {
+				users = discUsers;
+				io.emit('users', users); //将消息发送给所有人。
+			}
 		});
     
 		//disconnnect断开,自带函数方法
 		socket.on('disconnect', data => {
+			discUsers = [];
 			io.emit('disconnecting', data); //将消息发送给所有人。
 		});
 
