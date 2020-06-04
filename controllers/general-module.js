@@ -1,6 +1,5 @@
 
 const generalModuleFunc = require('../models/general-module');
-// const SystemModule = require('../models/system-module');
 const lodash = require('lodash');
 
 const fieldDataTypeEnum = {
