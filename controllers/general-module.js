@@ -4,6 +4,7 @@ const lodash = require('lodash');
 
 const fieldDataTypeEnum = {
 	TEXT: { verify:'string', type: String },
+	URL: { verify:'string', type: String },
 	TEXTAREA: { verify:'string', type: String },
 	NUMBER: { verify:'number', type: Number },
 	CURRENCY: { verify:'number', type: Number },
