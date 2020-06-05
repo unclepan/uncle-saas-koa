@@ -70,9 +70,21 @@ class GeneralModuleCtl {
 		const { size = 10, current = 1 } = ctx.query;
 		let page = Math.max(current * 1, 1) - 1;
 		const perPage = Math.max(size * 1, 1);
-		const conditions = {del: false};
-		const count = await ctx.state.modelInstance.countDocuments(conditions);
 
+		let conditions = { del: false };
+		Object.keys(ctx.query).forEach(item => {
+			if(item !== 'size' && item !== 'current' && ctx.query[item]){
+				if(ctx.query[item] === 'true'){
+					conditions[item] = true;	
+				}else if(ctx.query[item] === 'false'){
+					conditions[item] = false;	
+				} else {
+					conditions[item] = new RegExp(ctx.query[item]);
+				}
+			}
+		});
+		
+		const count = await ctx.state.modelInstance.countDocuments(conditions);
 		let row = await ctx.state.modelInstance.find(conditions)
 			.limit(perPage)
 			.skip(page * perPage)
