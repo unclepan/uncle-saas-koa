@@ -2,7 +2,7 @@
 module.exports = {
 	apps: [
 		{
-			name: 'saas', // 应用名称
+			name: 'saas-koa', // 应用名称
 			script: './bin/www', // 启动文件地址
 			cwd: './', // 当前工作路径
 			watch: [
