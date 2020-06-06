@@ -15,7 +15,10 @@ const {
 	module: mo
 } = require('../controllers/general-module');
 
-router.get('/:id', checkSystemModuleExist, createModelInstance, find);
+// router.get('/:id', checkSystemModuleExist, createModelInstance, find);
+
+// 传参大小不定，使用post改造
+router.post('/get/:id', checkSystemModuleExist, createModelInstance, find);
 
 router.get('/:id/module', checkSystemModuleExist, mo);
 

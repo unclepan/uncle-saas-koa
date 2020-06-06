@@ -72,15 +72,12 @@ class GeneralModuleCtl {
 		const perPage = Math.max(size * 1, 1);
 
 		let conditions = { del: false };
-		Object.keys(ctx.query).forEach(item => {
-			if(item !== 'size' && item !== 'current' && ctx.query[item]){
-				if(ctx.query[item] === 'true'){
-					conditions[item] = true;	
-				}else if(ctx.query[item] === 'false'){
-					conditions[item] = false;	
-				} else {
-					conditions[item] = new RegExp(ctx.query[item]);
-				}
+		Object.keys(ctx.request.body).forEach(item => {
+			if(typeof ctx.request.body[item] === 'string' && ctx.request.body[item]) {
+				conditions[item] = new RegExp(ctx.request.body[item]);
+			}
+			if(typeof ctx.request.body[item] !== 'string'){
+				conditions[item] = ctx.request.body[item];
 			}
 		});
 		

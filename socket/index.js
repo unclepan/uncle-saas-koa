@@ -41,7 +41,7 @@ module.exports = function(io){
 					io.emit('getMsg', res); //通知所有客户端
 				});
 			} catch (error) {
-				console.log('失败',error);
+				console.log('失败', error);
 			}
 		});
 	});
