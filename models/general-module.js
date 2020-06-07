@@ -22,7 +22,7 @@ class ModelInstance {
 					select: false
 				},
 			}, m);
-			const moduleSchema = new Schema(obj, { timestamps: true });
+			const moduleSchema = new Schema(obj, { timestamps: true, strict: false });
 			this.modelInstanceList[modelName] = model(modelName, moduleSchema);
 			return this.modelInstanceList[modelName];
 		}
