@@ -39,7 +39,7 @@ class GeneralModuleCtl {
 		}, {});
 
 		// 3.生成schema，并且返回model
-		const modelInstance = generalModuleFunc.init(ins, systemModule.ename);
+		const modelInstance = generalModuleFunc.init(ins, systemModule.ename, ctx);
 
 		ctx.state.modelInstance = modelInstance;
 		ctx.state.moduleFields = moduleFields;
